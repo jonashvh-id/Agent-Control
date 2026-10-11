@@ -12,7 +12,13 @@ pub async fn run(command: Result<Command>) -> Result<()> {
         return Ok(());
     }
     let (mut config, github) = crate::config::from_env()?;
-    if let Command::Serve { port: Some(port) } = command {
+    let listen_port = match &command {
+        Command::Serve { port } => port.unwrap_or(8010),
+        _ => 8010,
+    };
+    if let Command::Serve { port: Some(port) } = command
+        && std::env::var_os("AGENT_CONTROL_ORIGIN").is_none()
+    {
         let mut origin = crate::config::validate_origin(&config)?;
         origin
             .set_port(Some(port))
@@ -31,8 +37,8 @@ pub async fn run(command: Result<Command>) -> Result<()> {
         println!("Administrator created in the Agent Control Rust data directory.");
         return Ok(());
     }
-    let url = crate::config::validate_origin(&app.config)?;
-    let port = url.port_or_known_default().unwrap_or(8010);
+    crate::config::validate_origin(&app.config)?;
+    let port = listen_port;
     let listener = tokio::net::TcpListener::bind(("127.0.0.1", port)).await?;
     tracing::info!(port, "Agent Control Rust server started on loopback");
     axum::serve(

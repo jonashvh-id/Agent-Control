@@ -34,7 +34,10 @@ impl App {
                 .execute(&db.pool)
                 .await?;
         }
-        let dummy_hash = security::passwords::hash("UnknownAccount9!Secure")?;
+        let dummy_hash = security::passwords::hash(&format!(
+            "UnknownAccount9!{}",
+            security::keys::random_token()
+        ))?;
         Ok(Arc::new(Self {
             db,
             config,
