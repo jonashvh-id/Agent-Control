@@ -1,0 +1,164 @@
+[
+  {
+    "name": "issues.list",
+    "description": "Read issues in explicitly configured GitHub repositories.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "enum": [
+            "demo/repo"
+          ]
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "open",
+            "closed",
+            "all"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "repository"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "number": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "title": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "url": {
+                "type": "string",
+                "maxLength": 2048
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "open",
+                  "closed"
+                ]
+              }
+            },
+            "required": [
+              "number",
+              "title",
+              "url",
+              "state"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "issues"
+      ],
+      "additionalProperties": false
+    },
+    "required_scopes": [
+      "issues:read"
+    ],
+    "risk_level": "low",
+    "requires_confirmation": false
+  },
+  {
+    "name": "issues.create",
+    "description": "Create one GitHub issue after exact human approval.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "enum": [
+            "demo/repo"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "\\S"
+        },
+        "body": {
+          "type": "string",
+          "maxLength": 12000
+        }
+      },
+      "required": [
+        "repository",
+        "title",
+        "body"
+      ],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "issue": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "title": {
+              "type": "string",
+              "maxLength": 1024
+            },
+            "url": {
+              "type": "string",
+              "maxLength": 2048
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "open",
+                "closed"
+              ]
+            }
+          },
+          "required": [
+            "number",
+            "title",
+            "url",
+            "state"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "issue"
+      ],
+      "additionalProperties": false
+    },
+    "required_scopes": [
+      "issues:write"
+    ],
+    "risk_level": "medium",
+    "requires_confirmation": true
+  }
+]

@@ -12,7 +12,7 @@ export function shell(actor, logout) {
       el('div', {}, el('strong', {}, actor.username), el('small', {}, actor.role)), button('Sign out', logout, 'text'))));
   const content = el('main', { class: 'content', id: 'content', tabindex: '-1' });
   const topbar = el('div', { class: 'topbar' }, el('span', {}, 'Organization / Control plane'),
-    el('div', { class: 'topbar-status' }, el('span', { class: 'status-dot' }), 'Connected to local API', badge('v0.2')));
+    el('div', { class: 'topbar-status' }, el('span', { class: 'status-dot' }), 'Connected to local API', badge('v0.3')));
   return { node: el('div', { class: 'app-layout' }, el('a', { class: 'skip-link', href: '#content' }, 'Skip to content'), sidebar,
     el('div', { class: 'workspace' }, topbar, content)), content, nav };
 }
