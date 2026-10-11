@@ -9,9 +9,11 @@ pub fn from_env() -> Result<(Config, Option<connector_github::Config>)> {
     config.origin = value("AGENT_CONTROL_ORIGIN", "http://127.0.0.1:8010")
         .trim_end_matches('/')
         .into();
-    config.secure_cookies = value("AGENT_CONTROL_SECURE_COOKIES", "false") == "true";
-    config.execution_enabled = value("AGENT_CONTROL_EXECUTION_ENABLED", "false") == "true";
-    config.mcp_enabled = value("AGENT_CONTROL_MCP_ENABLED", "true") == "true";
+    config.secure_cookies =
+        value("AGENT_CONTROL_SECURE_COOKIES", "false").eq_ignore_ascii_case("true");
+    config.execution_enabled =
+        value("AGENT_CONTROL_EXECUTION_ENABLED", "false").eq_ignore_ascii_case("true");
+    config.mcp_enabled = value("AGENT_CONTROL_MCP_ENABLED", "true").eq_ignore_ascii_case("true");
     validate_origin(&config)?;
     let repositories: Vec<String> = value("AGENT_CONTROL_GITHUB_REPOSITORIES", "")
         .split(',')
@@ -49,4 +51,31 @@ pub fn validate_origin(c: &Config) -> Result<url::Url> {
         return Err(Error::new("invalid_origin", 400));
     }
     Ok(url)
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn rejects_non_origin_urls() {
+        let mut c = Config::local("unused".into());
+        for origin in [
+            "http://evil.example",
+            "ftp://127.0.0.1",
+            "https://user:pass@example.com",
+            "http://127.0.0.1/path",
+            "http://127.0.0.1?secret=x",
+            "http://127.0.0.1#fragment",
+        ] {
+            c.origin = origin.into();
+            assert!(validate_origin(&c).is_err());
+        }
+    }
+    #[test]
+    fn secure_public_origin_supported() {
+        let mut c = Config::local("unused".into());
+        c.origin = "https://control.example.com".into();
+        assert!(validate_origin(&c).is_err());
+        c.secure_cookies = true;
+        assert!(validate_origin(&c).is_ok());
+    }
 }

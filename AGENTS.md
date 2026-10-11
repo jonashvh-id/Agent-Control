@@ -1,14 +1,17 @@
 # Agent Control engineering instructions
 
-This repository is a standalone governance foundation with a restricted GitHub/MCP pilot, not an enterprise security certification.
+The primary application backend is Rust (Axum/Tokio/SQLx/Serde/Tracing), with the existing JavaScript frontend. Python is permitted only in archived reference or useful non-runtime migration/test tooling.
 
-- ZNode is read-only. Never edit its source, Git state, deployments, configuration or data. Never run its application or tests against its runtime. Copy only reviewed source; never copy secrets, databases or customer data.
-- One module has one responsibility. Separate API routing, services, persistence, policy decisions and connector adapters. Prefer files under 300 lines; review responsibilities above 400 lines. Do not create giant agents/security/gateway/utils modules.
-- Composition root is `backend/app/bootstrap.py`. Dependencies flow inward; modules do not import routes or the application object. Pass transactions explicitly when multiple changes must be atomic.
-- Humans and agents have separate authentication paths. Agents never receive human roles. Enforce authorization server-side and deny tools without an explicit policy.
-- Approval binds agent, connector, tool, validated parameters and idempotency key. Revalidate current authorization before consumption. Never reuse a consumed approval or retry an uncertain write automatically.
-- No arbitrary code, shell commands, user-supplied URLs or dynamic adapter imports in execution. Register trusted adapters in code. The GitHub pilot adapter is explicitly configured and disabled by default; ZNode is always excluded.
-- No credentials, request values or raw connector results in audit. Preserve records when credentials or agents are disabled.
-- UI uses live API data and explicit empty/future states. Never fabricate activity, integrations or metrics.
-- Run `.venv/bin/pytest`, frontend checks and the standalone smoke test after security-sensitive changes. Keep tests isolated with fresh temporary databases and test-only adapters.
-- Document extraction provenance and security limitations. Do not deploy publicly or change production infrastructure as part of foundation work.
+- ZNode and Dovehouse are read-only. Never modify their source, Git state, deployments, configurations, credentials, databases or runtime environments. Never run this project's tests against their data.
+- Develop controlled changes on a dedicated branch. Preserve Git history, avoid force pushes, use isolated owned development databases, and do not deploy or publish a release without explicit instructions.
+- One module has one responsibility. Separate HTTP transport, domain orchestration, repositories, pure policy evaluation, approvals and providers. Prefer production files below 300 lines; review mixed responsibilities above 400. Do not create giant main/lib/mod/gateway/service/utility files or empty crates.
+- Composition is in `crates/server`; dependency direction is server → connector-github → control-core, and server → control-core. Core depends on typed provider interfaces, never HTTP routing or provider implementations. No circular dependencies, microservices or new runtime languages without demonstrated need.
+- Humans and agents have separate authentication paths. Require current sessions/credentials, exact scope intersection, default DENY and server-side authorization. Centralize discovery/admission/dispatch checks; no route or provider may bypass governance.
+- Approval binds agent, credential, connector, tool, exact validated parameters and idempotency key. Show encrypted immutable previews to authorized humans only; revalidate current authority, expiry and policy before dispatch; consume once.
+- Commit durable claims and dispatch markers before external I/O. Do not hold SQLite transactions over the network. Reuse only minimal receipts. Record uncertainty explicitly and never automatically retry a write that might have reached the provider. Never claim exactly-once provider execution.
+- Register trusted providers in code. No arbitrary shell, URLs, code execution or dynamic imports from agent input. Keep GitHub origin/repository allowlists, native permissions, response/time bounds and mandatory creation approval intact.
+- Use maintained cryptographic libraries, constant-time secret comparisons and private owned files; no custom cryptographic primitives. Forbid unsafe application Rust unless explicitly justified. Never persist/log credentials, raw request values or arbitrary provider errors/results in audit.
+- Use typed policy/execution states and explicit valid transitions. Keep sensitive modules independently testable. Reproduce security behaviors, not just superficial implementation-shaped tests or coverage percentages.
+- Run `cargo test --workspace --locked`, `cargo clippy --workspace --all-targets -- -D warnings`, `cargo fmt --all -- --check` and frontend checks after relevant changes. Use isolated providers. Run the optional pinned Python/SDK parity checks when contracts or sensitive behavior change. Never create live issues for routine tests; external write tests require explicit approval for exact operations.
+- The existing frontend must use real API data and explicit empty/future states. Preserve workflows; do not fabricate integrations/activity or redesign it during backend work.
+- Keep RUST_MIGRATION_REPORT.md, RUST_MODULE_MAP.md, SECURITY_PARITY.md, MIGRATION_VALIDATION.md and security/build instructions consistent with actual evidence. Archived Python is read-only reference; do not edit it to make parity pass or introduce it into the primary runtime.

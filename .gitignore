@@ -25,3 +25,6 @@ htmlcov/
 *.secret
 target/
 var-rust/
+
+*.profraw
+*.profdata

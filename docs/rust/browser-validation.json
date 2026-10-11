@@ -1,0 +1,19 @@
+{
+  "isolated_rust_fixture_workflows": [
+    "login",
+    "exact approval preview and human decision",
+    "agent registration optional fields empty",
+    "agent pause",
+    "policy save",
+    "global stop"
+  ],
+  "release_ui": "native CLI-created account login and embedded v0.3 dashboard passed",
+  "mobile_viewport": [
+    390,
+    844
+  ],
+  "mobile_document_width": 390,
+  "diagnostics": "expected anonymous /auth/me 401 only; no JavaScript exceptions",
+  "live_github_writes": 0,
+  "artifacts_ignored": "output/playwright and .playwright-cli"
+}
