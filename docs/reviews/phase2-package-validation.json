@@ -1,0 +1,7 @@
+{
+  "wheel": "agent_control-0.2.0-py3-none-any.whl",
+  "sha256": "fa779bb2405c80ed004b5498ac3f1c4c070d57aa8f03644b7656fd993d7bb909",
+  "standalone_start": "passed",
+  "bundled_mcp_github_ui": true,
+  "runtime_data_packaged": false
+}
