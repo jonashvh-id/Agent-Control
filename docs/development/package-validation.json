@@ -1,0 +1,8 @@
+{
+  "wheel": "agent_control-0.1.0-py3-none-any.whl",
+  "sha256": "920b7d8d34cb5fe4577070ed0cfa1d76fcfc973c46bd6849882bc17b193cae51",
+  "installed_outside_workspace": true,
+  "standalone_start": "passed",
+  "frontend_assets": "passed",
+  "tests_and_runtime_data_packaged": false
+}

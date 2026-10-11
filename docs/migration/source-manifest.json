@@ -1,0 +1,139 @@
+{
+  "repo": "jonashvh-id/zetako-node",
+  "ref": "refactor",
+  "commit": "9bd840ba6b5fc285f178a0383709c653dd1e5aa8",
+  "examined": [
+    {
+      "path": "pyproject.toml",
+      "blob": "5461ddb423a478931fe1096072a6c0e9cf78bfe2"
+    },
+    {
+      "path": "app/main.py",
+      "blob": "20028a023e1c720ce66e11567025a70ef397aecc"
+    },
+    {
+      "path": "app/models/agent_actions.py",
+      "blob": "fb1920fa91026b2e3d61e5244bc8a70b67946e74"
+    },
+    {
+      "path": "app/models/agent_integrations.py",
+      "blob": "230ae564e3028c2677c6b6469737a92bedec81af"
+    },
+    {
+      "path": "app/models/agent_confirmations.py",
+      "blob": "270776d628e9442c63b2da379f6e8b5a58f84b19"
+    },
+    {
+      "path": "app/services/agent_capability_policy_service.py",
+      "blob": "23c22e1a0727ccf94eece025afd2cf9f8a525ba9"
+    },
+    {
+      "path": "app/services/agent_principal_service.py",
+      "blob": "c5f42a09474c0447dd96fed8adbb18e4570bea81"
+    },
+    {
+      "path": "app/services/agent_integration_service.py",
+      "blob": "77e11e961d10e18bc0f756253c69b0d89d2893ba"
+    },
+    {
+      "path": "app/services/agent_integration_store.py",
+      "blob": "a705e7bbdabf74e6c8d7802fe0fe010b16480b62"
+    },
+    {
+      "path": "app/services/agent_confirmation_service.py",
+      "blob": "97119c5c8c8a2da3b9f47d3fa92507c10bae8bbf"
+    },
+    {
+      "path": "app/services/agent_action_audit_service.py",
+      "blob": "5917832b9af727236913f1fd6bb0dbbabd1053e5"
+    },
+    {
+      "path": "app/services/agent_execution_gateway.py",
+      "blob": "c3bafa77c2e30e925b91ba1fa681e67de49d8927"
+    },
+    {
+      "path": "app/services/agent_execution_application.py",
+      "blob": "d1fa31378a0c126e0e51348511870087bff7a19a"
+    },
+    {
+      "path": "app/services/agent_tool_runtime.py",
+      "blob": "f7da09b8d7afdbf319966d2f7c0f7a733338faa6"
+    },
+    {
+      "path": "app/services/agent_tool_dispatcher.py",
+      "blob": "eea15f5a94acb493f8ca1f0291fa19fd37592076"
+    },
+    {
+      "path": "app/services/auth_service.py",
+      "blob": "f8089b404208b4a2326186da3c40a11f43435201"
+    },
+    {
+      "path": "app/services/auth_store.py",
+      "blob": "2adf4625ec0cefd9594f31bd88e61ac771fe4059"
+    },
+    {
+      "path": "app/services/security_service.py",
+      "blob": "d05da5859084f65f4e9d2dfe84ed8af0a0bf6d57"
+    },
+    {
+      "path": "app/services/audit_store.py",
+      "blob": "18c68f2edb296c68546a76507531e92bdadfecc4"
+    },
+    {
+      "path": "app/routes/admin/agents.py",
+      "blob": "3b44e92b9f72e1e4bae3a4b743a4db2b23f4664a"
+    },
+    {
+      "path": "app/frontend/templates/pages/agents.html",
+      "blob": "fabe4492e017a01e0ba8c4298660c53531cb5f55"
+    },
+    {
+      "path": "app/frontend/templates/pages/agent_detail.html",
+      "blob": "6bd959db7b282211997919bc12a0822d997d7de1"
+    },
+    {
+      "path": "app/frontend/static/css/dashboard/agents.css",
+      "blob": "a8e773e68c3f584ce5048e67af2447a8d8b2181e"
+    },
+    {
+      "path": "tests/test_agent_execution_replay.py",
+      "blob": "aaffc262ca5a4657990c5adabfba3be58868f09f"
+    },
+    {
+      "path": "tests/test_agent_policy_relaxation_replay.py",
+      "blob": "608cab9f2edfdfb1bbf833568ecfef36e69ddc60"
+    },
+    {
+      "path": "tests/test_agent_approval_resume.py",
+      "blob": "a11474f014a093b5356849dc296c04668df0ec4e"
+    },
+    {
+      "path": "tests/test_agent_center.py",
+      "blob": "41d2708a85d73b898206e4d30819cc86c7df2590"
+    },
+    {
+      "path": "tests/test_agent_foundation_e2e.py",
+      "blob": "b41da643920ccfb0f59478b728161e05669f7180"
+    },
+    {
+      "path": ".github/workflows/agent-foundation.yml",
+      "blob": "a53ce8b7bcb879cfdd1a3f42329bf60b58b26103"
+    },
+    {
+      "path": "app/services/passwords.py",
+      "blob": "344798f37285694aebacb9d800e7b5b4d86fbee7"
+    },
+    {
+      "path": "zetako/sqlite.py",
+      "blob": "a54b8a5ee8d536936ba716b6b85ea6b1586c25d5"
+    },
+    {
+      "path": "app/models/agent_tools.py",
+      "blob": "01b2e99db2804fc637f2876649678fbe0daa4006"
+    },
+    {
+      "path": "app/frontend/static/js/user_dom.js",
+      "blob": "6ab05a8219d8ca36f8b79e0632c17b100cc49164"
+    }
+  ]
+}

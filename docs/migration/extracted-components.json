@@ -1,0 +1,58 @@
+[
+  {
+    "source": "app/services/passwords.py",
+    "source_blob": "344798f37285694aebacb9d800e7b5b4d86fbee7",
+    "destination": "backend/app/core/security/passwords.py",
+    "destination_sha256": "3927a7beeba865b2dd0ed7872846859c9a18d1bd73a54ed2b7618ca842c837d6",
+    "adaptation": "full helper; formatting only"
+  },
+  {
+    "source": "app/models/agent_tools.py",
+    "source_blob": "01b2e99db2804fc637f2876649678fbe0daa4006",
+    "destination": "backend/app/modules/connectors/models.py",
+    "destination_sha256": "a9a1fa7a778f715aefbbf7be0e0495e32a07c65110c442adbe9303f42a203105",
+    "adaptation": "full frozen tool model; formatting only"
+  },
+  {
+    "source": "app/services/agent_integration_service.py",
+    "source_blob": "77e11e961d10e18bc0f756253c69b0d89d2893ba",
+    "destination": "backend/app/core/security/tokens.py",
+    "destination_sha256": "260ea6c8cc166092a2c43c6cb166c7a5d10f586ca208ce5c8f1996b341731856",
+    "adaptation": "generate_token and hash_token extracted; new prefix"
+  },
+  {
+    "source": "app/services/agent_capability_policy_service.py",
+    "source_blob": "23c22e1a0727ccf94eece025afd2cf9f8a525ba9",
+    "destination": "backend/app/modules/policies/engine.py",
+    "destination_sha256": "fb4e9422f39fd00355adc7b59b70e126f0e84a3dceb7f183eb9b2c1c7bbad417",
+    "adaptation": "effective_mode/effective_tool adapted; strict deny + scope first"
+  },
+  {
+    "source": "app/services/agent_action_audit_service.py",
+    "source_blob": "5917832b9af727236913f1fd6bb0dbbabd1053e5",
+    "destination": "backend/app/core/security/fingerprint.py",
+    "destination_sha256": "f048df5a9c58bf798a1eed24f6a9fe0b45b200e4067dc74988f4198bba058d30",
+    "adaptation": "canonical JSON input hashing adapted; strict JSON and HMAC"
+  },
+  {
+    "source": "app/services/agent_action_audit_service.py",
+    "source_blob": "5917832b9af727236913f1fd6bb0dbbabd1053e5",
+    "destination": "backend/app/modules/audit/redaction.py",
+    "destination_sha256": "98902000fd98fbaf81174a8310a5874fd5386464b09624e3fd0a0837e4a47034",
+    "adaptation": "safe summary pattern adapted; only shape/types"
+  },
+  {
+    "source": "zetako/sqlite.py",
+    "source_blob": "a54b8a5ee8d536936ba716b6b85ea6b1586c25d5",
+    "destination": "backend/app/core/database/connection.py",
+    "destination_sha256": "5508299b2af10a2e4c1f437ddf4b11d2ba01b4be2aa852618ec0827f90007260",
+    "adaptation": "connection options and closing adapted; no telemetry"
+  },
+  {
+    "source": "app/frontend/static/js/user_dom.js",
+    "source_blob": "6ab05a8219d8ca36f8b79e0632c17b100cc49164",
+    "destination": "frontend/src/components/dom.js",
+    "destination_sha256": "1b90c61e5dd1a94ef412e09b8c3191e519cc0c8a58a3c1b5ef7103487579166e",
+    "adaptation": "copied; global renamed"
+  }
+]
