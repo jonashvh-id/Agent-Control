@@ -3,7 +3,7 @@ name: Rust and frontend CI
 on:
   pull_request:
   push:
-    branches: [main, migration/rust-backend]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
