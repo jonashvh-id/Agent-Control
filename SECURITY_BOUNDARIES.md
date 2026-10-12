@@ -8,7 +8,7 @@ Immutable approvals bind agent/credential/tool/connector, keyed exact-parameter 
 
 The SQLite ledger durably records claims and dispatch before I/O. Unique keys and conditional state transitions prevent concurrent duplicate dispatch. Uncertain or failed claims are never automatically retried; recovery preserves uncertain state. Already admitted calls can finish after revocation. No exactly-once or cancellation guarantee is made.
 
-GitHub uses a fixed HTTPS origin, finite allowlists, native permissions, no redirects/proxies/retries, bounded responses/time and safe minimal DTOs/receipts. Private owned nonsymlink credentials are reread at dispatch and never given to agents. Local gh-demo references an existing credential in memory only for the designated test repository/loopback; native token rights may be broader.
+GitHub uses a fixed HTTPS origin, finite allowlists, native permissions, no redirects/proxies/retries, bounded responses/time and safe minimal DTOs/receipts. Private owned nonsymlink credentials are reread at dispatch and never given to agents. No CLI/keychain credential import path is supported; the GitHub adapter uses an explicitly configured private credential file.
 
 Runtime paths require a distinct Rust ownership marker and private Unix files; another process cannot open the same runtime. Existing Python/customer directories are rejected. Fresh SQLx migrations do not migrate live data. Database operators remain trusted: local append-only/immutable triggers are not an external tamper-proof audit system.
 

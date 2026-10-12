@@ -2,7 +2,7 @@
 
 The primary application backend is Rust (Axum/Tokio/SQLx/Serde/Tracing), with the existing JavaScript frontend. Python is permitted only in archived reference or useful non-runtime migration/test tooling.
 
-- ZNode and Dovehouse are read-only. Never modify their source, Git state, deployments, configurations, credentials, databases or runtime environments. Never run this project's tests against their data.
+- Never read or modify unrelated local projects, personal folders, credential stores or runtime data. Tests must operate only on isolated temporary fixtures.
 - Develop controlled changes on a dedicated branch. Preserve Git history, avoid force pushes, use isolated owned development databases, and do not deploy or publish a release without explicit instructions.
 - One module has one responsibility. Separate HTTP transport, domain orchestration, repositories, pure policy evaluation, approvals and providers. Prefer production files below 300 lines; review mixed responsibilities above 400. Do not create giant main/lib/mod/gateway/service/utility files or empty crates.
 - Composition is in `crates/server`; dependency direction is server → each connector → control-core, and server → control-core. GitHub and Google Drive are independent adapters. Core depends on typed provider interfaces, never HTTP routing or provider implementations. No circular dependencies, microservices or new runtime languages without demonstrated need.

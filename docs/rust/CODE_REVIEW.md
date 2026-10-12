@@ -24,6 +24,6 @@ No unresolved blocking finding was identified in these reviewed paths after the 
 
 ## Validation and merge gate
 
-Local macOS arm64 validation: 112 Rust tests passed; 2 explicit opt-in tests are excluded from the default run. Clippy with warnings denied, rustfmt, 2 frontend tests and release build pass. Optional pinned Python/Rust validation passes 28 HTTP observations plus the separate Python MCP SDK workflow. Protected ZNode and Dovehouse snapshots remain unchanged; no live provider write was performed.
+Local macOS arm64 validation: 112 Rust tests passed; 2 explicit opt-in tests are excluded from the default run. Clippy with warnings denied, rustfmt, 2 frontend tests and release build pass. Optional pinned Python/Rust validation passes 28 HTTP observations plus the separate Python MCP SDK workflow. no live provider write was performed.
 
 [Ubuntu workflow](../../.github/workflows/ci.yml) runs on pull requests and pushes to main: Rust 1.89, formatting, clippy, all default tests (including isolated standalone startup), frontend checks, release build and release help with empty PATH. Actions are pinned to verified upstream commit hashes; job permissions are read-only and no application secret is supplied. Branch pushes are covered by the PR synchronize event, avoiding duplicate builds for a single commit. [PR #2](https://github.com/jonashvh-id/Agent-Control/pull/2) contains the authoritative CI result for each revision. Fusion is authorized only after its Ubuntu job succeeds and the PR remains mergeable.

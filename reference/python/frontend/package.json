@@ -1,1 +1,0 @@
-{"name":"agent-control-ui","private":true,"type":"module","scripts":{"check":"node --test tests/*.test.js"}}

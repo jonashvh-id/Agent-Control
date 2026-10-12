@@ -179,7 +179,7 @@ async fn repository_escape_refused_before_io() {
         "other/repo",
         "demo/../../evil",
         "https://evil.example",
-        "jonashvh-id/zetako-node",
+        "unlisted/private-repository",
     ] {
         let mut p = input();
         p["repository"] = json!(repo);
@@ -226,29 +226,16 @@ async fn symlink_secret_refused() {
     assert!(credentials::token(&f.adapter.config).await.is_err());
 }
 #[test]
-fn protected_project_and_demo_config_refused() {
-    let config = |repo: &str, source: &str| Config {
-        repositories: vec![repo.into()],
-        token_file: Some("unused".into()),
+fn explicit_credential_file_required() {
+    let config = |source: &str, with_file: bool| Config {
+        repositories: vec!["demo/repo".into()],
+        token_file: with_file.then(|| "unused".into()),
         credential_source: source.into(),
         timeout: std::time::Duration::from_secs(1),
     };
-    assert!(
-        config("jonashvh-id/zetako-node", "file")
-            .validate(true)
-            .is_err()
-    );
-    assert!(config("demo/repo", "gh-demo").validate(true).is_err());
-    assert!(
-        config("jonashvh-id/Agent-Control", "gh-demo")
-            .validate(false)
-            .is_err()
-    );
-    assert!(
-        config("jonashvh-id/Agent-Control", "gh-demo")
-            .validate(true)
-            .is_ok()
-    );
+    assert!(config("file", true).validate(true).is_ok());
+    assert!(config("file", false).validate(true).is_err());
+    assert!(config("system-cli", true).validate(true).is_err());
 }
 #[tokio::test]
 async fn numeric_read_arguments_not_silently_defaulted() {
