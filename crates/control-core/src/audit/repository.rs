@@ -15,7 +15,7 @@ pub async fn record(db: &mut SqliteConnection, event: Event<'_>) -> Result<()> {
 }
 pub async fn list(pool: &sqlx::SqlitePool) -> Result<Value> {
     Ok(Value::Array(
-        sqlx::query("SELECT * FROM audit_events ORDER BY sequence DESC LIMIT 100")
+        sqlx::query("SELECT e.*,g.name AS agent_name,h.username AS human_name FROM audit_events e LEFT JOIN agents g ON g.id=e.agent_id LEFT JOIN humans h ON e.actor_kind='human' AND h.id=e.actor_id ORDER BY e.sequence DESC LIMIT 100")
             .fetch_all(pool)
             .await?
             .iter()

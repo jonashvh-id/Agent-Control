@@ -1,16 +1,22 @@
 import { api } from '../services/api.js';
-import { el, heading, panel, table, badge, button, empty, date } from '../components/elements.js';
+import { el,heading,panel,table,badge,button,empty,date } from '../components/elements.js';
 import { dialog } from '../components/dialog.js';
+import { applicationName,toolName } from '../services/explanations.js';
 export async function approvalsPage(refresh) {
-  const approvals = await api('/approvals');
-  const review = approval => dialog('Review immutable request',[
-    el('dl',{},el('dt',{},'Agent'),el('dd',{},approval.agent_id),el('dt',{},'Target operation'),el('dd',{},`${approval.connector} / ${approval.tool}`),
-      el('dt',{},'Exact request preview'),el('dd',{},approval.input_preview ? el('pre',{class:'approval-preview'},JSON.stringify(approval.input_preview,null,2)) : `${approval.input_summary.parameter_count} parameters. No connector preview is available.`),
-      el('dt',{},'Request fingerprint'),el('dd',{class:'hash'},approval.input_hash),el('dt',{},'Expires'),el('dd',{},date(approval.expires_at*1000))),
-    el('label',{},el('span',{},'Decision'),el('select',{name:'decision'},el('option',{value:'denied'},'Deny'),el('option',{value:'approved'},'Approve'))),
-    el('p',{class:'form-note'},'Approval binds the exact request and credential. Current authorization is checked again before execution.')],
-    'Record decision',async values => { await api(`/approvals/${approval.id}/decision`,{method:'POST',body:values}); await refresh(); });
-  return el('div',{},heading('Approvals','Human decisions for sensitive operations. Each grant is bound to one request.'),
-    panel('Request queue & decisions',approvals.length ? table(['Agent','Operation','Status','Requested',''],approvals.map(a => [a.agent_id.slice(0,12),`${a.connector} / ${a.tool}`,badge(a.status),date(a.created_at),
-      a.status==='pending' ? button('Review',()=>review(a),'secondary') : el('span',{class:'muted'},a.decided_by ? 'Decision recorded' : 'Closed')])) : empty('No requests awaiting review','Approval requests appear when a registered tool has an ASK policy. Requests must pass the same authorization checks before execution.')));
+  const approvals=await api('/approvals');const pending=approvals.filter(a => a.status==='pending');
+  const review=a => dialog('Review this exact request',[
+    el('dl',{},el('dt',{},'Requested by'),el('dd',{},a.agent_name || a.agent_id),
+      el('dt',{},'Application / action'),el('dd',{},`${applicationName(a.connector)} · ${toolName(a.connector,a.tool)}`),
+      el('dt',{},'Exact request'),el('dd',{},a.input_preview ? el('pre',{class:'approval-preview'},JSON.stringify(a.input_preview,null,2)) : 'No preview is available.'),
+      el('dt',{},'Credential'),el('dd',{},a.credential_id),el('dt',{},'Expires'),el('dd',{},date(a.expires_at*1000))),
+    el('label',{},el('span',{},'Your decision'),el('select',{name:'decision'},el('option',{value:'denied'},'Deny'),el('option',{value:'approved'},'Approve this exact request once'))),
+    el('details',{},el('summary',{},'Request fingerprint'),el('code',{class:'hash'},a.input_hash)),
+    el('p',{class:'form-note'},'Approving does not execute the action. The agent must submit the same request and credential. Current permissions are checked again.')
+  ],'Record my decision',async values => {await api(`/approvals/${a.id}/decision`,{method:'POST',body:values});await refresh();});
+  return el('div',{},heading('Approvals','See who is asking, what will happen, and the exact parameters before deciding.'),
+    panel(`Waiting for you · ${pending.length}`,pending.length ? el('div',{class:'approval-cards'},pending.map(a => el('article',{class:'approval-card'},
+      el('div',{},el('strong',{},a.agent_name || a.agent_id.slice(0,12)),el('small',{},`${applicationName(a.connector)} · ${toolName(a.connector,a.tool)}`)),
+      a.input_preview ? el('pre',{class:'approval-preview'},JSON.stringify(a.input_preview,null,2)) : null,
+      el('small',{},`Expires ${date(a.expires_at*1000)}`),button('Review request',() => review(a),'secondary')))) : empty('Nothing needs your approval','Requests appear here when an agent uses an action governed by ASK.')),
+    panel('Recent decisions',table(['Agent','Action','Status','Requested'],approvals.filter(a => a.status!=='pending').map(a => [a.agent_name || a.agent_id.slice(0,12),toolName(a.connector,a.tool),badge(a.status),date(a.created_at)]))));
 }

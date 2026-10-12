@@ -39,11 +39,12 @@ dependencies = [
 
 [[package]]
 name = "agent-control-server"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "async-trait",
  "axum",
  "connector-github",
+ "connector-google-drive",
  "control-core",
  "include_dir",
  "mime_guess",
@@ -395,7 +396,7 @@ dependencies = [
 
 [[package]]
 name = "connector-github"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "async-trait",
  "axum",
@@ -412,6 +413,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "connector-google-drive"
+version = "0.4.0"
+dependencies = [
+ "async-trait",
+ "axum",
+ "control-core",
+ "jsonschema",
+ "regex",
+ "reqwest 0.12.28",
+ "serde_json",
+ "tempfile",
+ "tokio",
+ "zeroize",
+]
+
+[[package]]
 name = "const-oid"
 version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -419,7 +436,7 @@ checksum = "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
 
 [[package]]
 name = "control-core"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "aes-gcm",
  "argon2",

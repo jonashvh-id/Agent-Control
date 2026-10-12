@@ -11,7 +11,7 @@ pub async fn run(command: Result<Command>) -> Result<()> {
         );
         return Ok(());
     }
-    let (mut config, github) = crate::config::from_env()?;
+    let (mut config, github, drive) = crate::config::from_env()?;
     let listen_port = match &command {
         Command::Serve { port } => port.unwrap_or(8010),
         _ => 8010,
@@ -25,7 +25,7 @@ pub async fn run(command: Result<Command>) -> Result<()> {
             .map_err(|_| Error::new("invalid_port", 400))?;
         config.origin = origin.as_str().trim_end_matches('/').into();
     }
-    let app = crate::compose(config, github).await?;
+    let app = crate::compose_with_drive(config, github, drive).await?;
     if let Command::CreateAdmin { username } = command {
         let password =
             zeroize::Zeroizing::new(rpassword::prompt_password("New administrator password: ")?);

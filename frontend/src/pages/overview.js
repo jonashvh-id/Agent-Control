@@ -5,11 +5,11 @@ export async function overview(actor) {
   const agents = actor.role === 'admin' ? await api('/agents') : null;
   const metrics = [['Registered agents', agents?.length ?? 'Admin view', 'Identities in this instance'],
     ['Pending approvals', approvals.filter(a => a.status === 'pending').length, 'Awaiting human review'],
-    ['Registered connectors', integrations.length, 'Trusted execution adapters'],
+    ['Configured applications', integrations.length, 'Trusted execution adapters'],
     ['Default policy', 'Deny', 'Explicit permission required']];
   return el('div', {}, heading('Govern with confidence.', 'A clear view of your agent identities, decisions and execution boundaries.'),
-    el('div', { class: 'foundation-banner' }, el('div', {}, el('strong', {}, 'Your governance foundation is ready to configure.'),
-      el('p', {}, 'Registry, policies, approval decisions and audit are available. MCP transport is available. GitHub requires an explicitly configured and enabled connector.')), badge('Foundation', 'foundation')),
+    el('div', { class: 'foundation-banner' }, el('div', {}, el('strong', {}, 'Your next steps: configure applications, register an agent, and choose its permissions.'),
+      el('p', {}, 'Connect Codex with a scoped credential. Requests governed by ASK appear in Approvals; blocked actions are explained in Activity & audit.')), badge('Product pilot', 'foundation')),
     el('div', { class: 'metrics' }, metrics.map(([label,value,description]) => el('section', { class: 'metric' }, el('span', {}, label), el('strong', {}, value), el('small', {}, description)))),
     el('div', { class: 'overview-grid' }, panel('Recent activity', audit.length ? table(['Operation','Decision','Time'], audit.slice(0,6).map(e => [e.action,badge(e.decision),date(e.created_at)])) : empty('No activity recorded', 'Administration and gateway events will appear here.')),
       panel('Execution boundary', el('div', { class: 'boundary' }, el('div', {}, 'External agent', el('small', {}, 'Untrusted proposals')), el('span', {}, '↓'),

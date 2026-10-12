@@ -1,0 +1,57 @@
+{
+  "client": "Codex CLI 0.137.0",
+  "actual_github_read": {
+    "status": "executed",
+    "http_status": 200
+  },
+  "native_google": {
+    "initial": [
+      {
+        "tool": "google-drive.files.search",
+        "http_status": 200,
+        "status": "executed",
+        "error": false
+      },
+      {
+        "tool": "google-drive.files.read",
+        "http_status": 202,
+        "status": "requires_approval",
+        "error": false
+      }
+    ],
+    "approved": [
+      {
+        "tool": "google-drive.files.read",
+        "http_status": 200,
+        "status": "executed",
+        "error": false,
+        "character_count": 1200
+      },
+      {
+        "tool": "google-drive.files.read",
+        "http_status": 200,
+        "status": "already_executed",
+        "error": false,
+        "character_count": 1200,
+        "result_available": false
+      }
+    ],
+    "native-denied": [
+      {
+        "tool": "google-drive.files.search",
+        "http_status": 403,
+        "status": null,
+        "error": true,
+        "reason_code": "google_access_denied"
+      }
+    ]
+  },
+  "native_secrets_given_to_model": false,
+  "human_sessions_given_to_model": false,
+  "live_provider_writes": 0,
+  "revocation": {
+    "http_status": 401,
+    "required_MCP_client_refused": true,
+    "model_tool_calls": 0
+  }
+}

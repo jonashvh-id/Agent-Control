@@ -1,5 +1,7 @@
 # Rust migration report
 
+The migration checkpoint is complete. Subsequent Phase 3 product changes preserve this Rust architecture and are documented separately in [the Phase 3 report](docs/reviews/PHASE3_REPORT.md) and [current module map](RUST_MODULE_MAP.md).
+
 Agent Control's primary backend is a standalone Rust executable. Axum, Tokio, SQLx/SQLite, Serde, Tracing and the official Rust MCP SDK replace the Python/FastAPI application runtime. The existing JavaScript frontend and the two GitHub issue capabilities are retained. Work was prepared on `migration/rust-backend`, based on `b946766e705856131b59f386b5ef657310f7dfdf`; the additive implementation checkpoint is `8cd480d`. The original Git history is preserved; fusion is gated by reviewed local validation and Ubuntu CI.
 
 ## Migration and module provenance
