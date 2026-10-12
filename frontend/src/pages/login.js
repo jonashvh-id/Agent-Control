@@ -15,6 +15,6 @@ export function loginPage(onLogin) {
   el('h1', {}, 'Your agents. Your rules.'), el('p', {}, 'Sign in to your organization’s control plane.'),
   input('Username', 'username', { autocomplete: 'username', maxlength: '80' }),
   input('Password', 'password', { type: 'password', autocomplete: 'current-password', maxlength: '256' }), errors, submit,
-  el('p', { class: 'login-footnote' }, 'Foundation release · Self-hosted · No default account'));
+  el('p', { class: 'login-footnote' }, 'Self-hosted control plane · No default account'));
   return el('main', { class: 'login-layout' }, form, el('p', { class: 'login-caption' }, 'Govern the connections routed through your gateway.'));
 }

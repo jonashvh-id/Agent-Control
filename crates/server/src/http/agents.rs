@@ -83,3 +83,23 @@ pub async fn revoke(
     agents::revoke(&app, &actor, &id, &credential).await?;
     Ok(StatusCode::NO_CONTENT.into_response())
 }
+pub async fn access(
+    State(app): State<Arc<App>>,
+    Path(id): Path<String>,
+    headers: HeaderMap,
+) -> ApiResult {
+    auth::human(&app, &headers, false, true).await?;
+    Ok(output(
+        control_core::gateway::access::describe(&app, &id).await?,
+    ))
+}
+pub async fn scopes(
+    State(app): State<Arc<App>>,
+    Path(id): Path<String>,
+    headers: HeaderMap,
+    input: Result<Json<Scopes>, axum::extract::rejection::JsonRejection>,
+) -> ApiResult {
+    let actor = auth::human(&app, &headers, true, true).await?;
+    agents::set_scopes(&app, &actor, &id, input?.0.scopes).await?;
+    Ok(StatusCode::NO_CONTENT.into_response())
+}

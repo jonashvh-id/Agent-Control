@@ -1,6 +1,6 @@
 # Agent Control Rust architecture
 
-A modular monolith in three crates, one process and SQLite. The existing JavaScript frontend is embedded in the executable. Python is confined to historical reference and optional migration tools.
+A modular monolith in four crates, one process and SQLite. GitHub and Google Drive remain independent provider adapters. The JavaScript frontend is embedded in the executable. Python is confined to historical reference and optional validation tools.
 
 ```mermaid
 flowchart LR
@@ -15,11 +15,13 @@ flowchart LR
     G --> X[Durable claim and dispatch marker]
     X --> C[Trusted GitHub adapter]
     C --> GH[Fixed GitHub REST origin / native permissions]
+    X --> GD[Trusted Google Drive adapter]
+    GD --> GA[Fixed Google API origin / native permissions]
     D --> DB[(Private SQLite)]
     G --> DB
 ```
 
-Admission holds a short BEGIN IMMEDIATE transaction: resolve current identity, check scope/policy/control, validate parameters/allowlist, bind the request and consume approval or return ASK, then durably claim the unique agent/idempotency key. Final dispatch separately rechecks current authority, expiry and fingerprint and commits the dispatch marker before calling GitHub. External I/O holds no database transaction. The receipt/outcome and audit commit afterward.
+Admission holds a short BEGIN IMMEDIATE transaction: resolve current identity, check scope/policy/control, validate parameters/allowlist, bind the request and consume approval or return ASK, then durably claim the unique agent/idempotency key. Final dispatch separately rechecks current authority, expiry and fingerprint and commits the dispatch marker before calling a provider. External I/O holds no database transaction. The receipt/outcome and audit commit afterward.
 
 Transitions are `prepared → dispatched → executed`, with failed or uncertain outcomes retained durably. Prepared/dispatched records surviving process termination become uncertain at startup. A failed/unfinished claim is not automatically dispatched again. A successful repeat returns only its receipt. GitHub issue creation has no exactly-once guarantee; the ledger prevents blind repeats rather than pretending to remove provider uncertainty.
 

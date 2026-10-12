@@ -71,3 +71,12 @@ pub async fn revoke(db: &mut SqliteConnection, agent: &str, credential: &str) ->
 pub async fn credentials(db: &mut SqliteConnection, agent: &str) -> Result<Value> {
     Ok(Value::Array(sqlx::query("SELECT id,agent_id,scopes,status,created_at,revoked_at FROM credentials WHERE agent_id=? ORDER BY created_at DESC").bind(agent).fetch_all(db).await?.iter().map(row_json).collect()))
 }
+pub async fn set_scopes(db: &mut SqliteConnection, agent: &str, scopes: &[String]) -> Result<()> {
+    sqlx::query("UPDATE agents SET scopes=?,updated_at=? WHERE id=?")
+        .bind(json!(scopes).to_string())
+        .bind(now())
+        .bind(agent)
+        .execute(db)
+        .await?;
+    Ok(())
+}

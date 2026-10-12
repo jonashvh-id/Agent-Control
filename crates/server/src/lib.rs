@@ -9,6 +9,13 @@ pub mod mcp;
 use control_core::{App, connector::Connector, error::Result, models::Config};
 use std::sync::Arc;
 pub async fn compose(config: Config, github: Option<connector_github::Config>) -> Result<Arc<App>> {
+    compose_with_drive(config, github, None).await
+}
+pub async fn compose_with_drive(
+    config: Config,
+    github: Option<connector_github::Config>,
+    drive: Option<connector_google_drive::Config>,
+) -> Result<Arc<App>> {
     let url = config::validate_origin(&config)?;
     let mut connectors: Vec<Arc<dyn Connector>> = vec![];
     if let Some(config) = github {
@@ -16,6 +23,9 @@ pub async fn compose(config: Config, github: Option<connector_github::Config>) -
             config,
             matches!(url.host_str(), Some("localhost" | "127.0.0.1" | "[::1]")),
         )?));
+    }
+    if let Some(config) = drive {
+        connectors.push(Arc::new(connector_google_drive::Drive::new(config)?));
     }
     App::new(config, connectors).await
 }

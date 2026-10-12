@@ -1,6 +1,7 @@
 pub mod agents;
 pub mod auth;
 pub mod boundary;
+pub mod catalog;
 pub mod gateway;
 pub mod governance;
 pub mod response;
@@ -20,6 +21,9 @@ pub fn router() -> Router<Arc<App>> {
         .route("/api/v1/auth/logout", post(auth::logout))
         .route("/api/v1/agents", get(agents::list).post(agents::create))
         .route("/api/v1/agents/{id}", get(agents::details))
+        .route("/api/v1/agents/{id}/access", get(agents::access))
+        .route("/api/v1/agents/{id}/scopes", patch(agents::scopes))
+        .route("/api/v1/catalog", get(catalog::list))
         .route("/api/v1/agents/{id}/status", patch(agents::status))
         .route("/api/v1/agents/{id}/credentials", post(agents::issue))
         .route(

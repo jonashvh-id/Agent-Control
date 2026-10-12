@@ -10,6 +10,7 @@ use std::sync::{
     Arc,
     atomic::{AtomicUsize, Ordering},
 };
+pub mod drive;
 pub struct Provider {
     pub calls: AtomicUsize,
     pub mode: AtomicUsize,
@@ -74,6 +75,7 @@ impl Connector for Provider {
 pub struct Harness {
     pub app: Arc<App>,
     pub provider: Arc<Provider>,
+    pub drive: Option<Arc<drive::DriveProvider>>,
     pub origin: String,
     pub client: reqwest::Client,
     pub actor: Human,
@@ -97,6 +99,24 @@ impl Harness {
         Self::with_ttl(execution, 900).await
     }
     pub async fn with_ttl(execution: bool, ttl: u64) -> Self {
+        Self::setup(execution, ttl, false, false, None).await
+    }
+    pub async fn multi() -> Self {
+        Self::setup(true, 900, true, false, None).await
+    }
+    pub async fn pilot(live_github: bool) -> Self {
+        Self::setup(true, 900, true, live_github, None).await
+    }
+    pub async fn native_pilot(live_github: bool, drive: connector_google_drive::Config) -> Self {
+        Self::setup(true, 900, true, live_github, Some(drive)).await
+    }
+    async fn setup(
+        execution: bool,
+        ttl: u64,
+        multi: bool,
+        live_github: bool,
+        native_drive: Option<connector_google_drive::Config>,
+    ) -> Self {
         let temp = tempfile::tempdir().unwrap();
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
         let origin = format!("http://{}", listener.local_addr().unwrap());
@@ -110,7 +130,38 @@ impl Harness {
         config.execution_enabled = execution;
         config.approval_seconds = ttl;
         config.origin = origin.clone();
-        let app = App::new(config, vec![provider.clone()]).await.unwrap();
+        let native = native_drive.is_some();
+        let drive = (multi && !native).then(|| {
+            Arc::new(drive::DriveProvider {
+                calls: AtomicUsize::new(0),
+            })
+        });
+        let github: Arc<dyn Connector> = if live_github {
+            Arc::new(
+                connector_github::GitHub::new(
+                    connector_github::Config {
+                        repositories: vec!["jonashvh-id/Agent-Control".into()],
+                        token_file: None,
+                        credential_source: "gh-demo".into(),
+                        timeout: std::time::Duration::from_secs(10),
+                    },
+                    true,
+                )
+                .unwrap(),
+            )
+        } else {
+            provider.clone()
+        };
+        let mut connectors: Vec<Arc<dyn Connector>> = vec![github];
+        if let Some(d) = &drive {
+            connectors.push(d.clone());
+        }
+        if let Some(config) = native_drive {
+            connectors.push(Arc::new(
+                connector_google_drive::Drive::new(config).unwrap(),
+            ));
+        }
+        let app = App::new(config, connectors).await.unwrap();
         control_core::identity::create_admin(&app, "admin", "Foundation9!Secure", "admin")
             .await
             .unwrap();
@@ -147,30 +198,40 @@ impl Harness {
             &app,
             &actor,
             control_core::agents::Create {
-                name: "Test agent".into(),
+                name: if native {
+                    "Codex pilot (native Google Drive)".into()
+                } else if live_github {
+                    "Codex pilot (GitHub read + Drive fixture)".into()
+                } else if multi {
+                    "Codex pilot (isolated providers)".into()
+                } else {
+                    "Test agent".into()
+                },
                 description: "".into(),
-                provider: "".into(),
-                runtime: "".into(),
-                scopes: vec!["issues:read".into(), "issues:write".into()],
+                provider: if multi { "OpenAI".into() } else { "".into() },
+                runtime: if multi { "Codex".into() } else { "".into() },
+                scopes: pilot_scopes(multi, live_github),
             },
         )
         .await
         .unwrap();
         let agent = agent["id"].as_str().unwrap().to_string();
-        let cred = control_core::agents::issue(
-            &app,
-            &actor,
-            &agent,
-            vec!["issues:read".into(), "issues:write".into()],
-        )
-        .await
-        .unwrap();
+        let cred =
+            control_core::agents::issue(&app, &actor, &agent, pilot_scopes(multi, live_github))
+                .await
+                .unwrap();
         control_core::lifecycle::connector(&app, &actor, "github", true)
             .await
             .unwrap();
+        if multi {
+            control_core::lifecycle::connector(&app, &actor, "google-drive", true)
+                .await
+                .unwrap();
+        }
         Self {
             app,
             provider,
+            drive,
             origin,
             client,
             actor,
@@ -238,4 +299,14 @@ impl Harness {
     pub fn calls(&self) -> usize {
         self.provider.calls.load(Ordering::SeqCst)
     }
+}
+fn pilot_scopes(multi: bool, live: bool) -> Vec<String> {
+    let mut scopes = vec!["issues:read".into()];
+    if !live {
+        scopes.push("issues:write".into());
+    }
+    if multi {
+        scopes.extend(["drive:search".into(), "drive:read".into()]);
+    }
+    scopes
 }
