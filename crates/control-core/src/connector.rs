@@ -13,6 +13,15 @@ pub struct Tool {
 }
 #[async_trait::async_trait]
 pub trait Connector: Send + Sync {
+    fn management(&self) -> Option<std::sync::Arc<dyn crate::connections::Management>> {
+        None
+    }
+    fn requires_resources(&self) -> bool {
+        false
+    }
+    fn observations(&self, _result: &Value) -> Vec<crate::resources::Metadata> {
+        vec![]
+    }
     fn id(&self) -> &'static str;
     fn tools(&self) -> Vec<Tool>;
     fn validate(&self, tool: &str, parameters: &Value) -> Result<()>;

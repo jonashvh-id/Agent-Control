@@ -16,6 +16,20 @@ pub async fn compose_with_drive(
     github: Option<connector_github::Config>,
     drive: Option<connector_google_drive::Config>,
 ) -> Result<Arc<App>> {
+    compose_with_oauth(config, github, drive, None).await
+}
+pub async fn compose_with_oauth(
+    config: Config,
+    github: Option<connector_github::Config>,
+    drive: Option<connector_google_drive::Config>,
+    mut oauth: Option<connector_google_drive::oauth::Config>,
+) -> Result<Arc<App>> {
+    if drive.is_some() && oauth.is_some() {
+        return Err(control_core::error::Error::new(
+            "google_credential_modes_conflict",
+            400,
+        ));
+    }
     let url = config::validate_origin(&config)?;
     let mut connectors: Vec<Arc<dyn Connector>> = vec![];
     if let Some(config) = github {
@@ -27,7 +41,24 @@ pub async fn compose_with_drive(
     if let Some(config) = drive {
         connectors.push(Arc::new(connector_google_drive::Drive::new(config)?));
     }
-    App::new(config, connectors).await
+    if let Some(oauth) = oauth.as_mut() {
+        oauth.origin = config.origin.clone();
+    }
+    let mut app = App::new(config, connectors).await?;
+    if let Some(config) = oauth {
+        let store = control_core::connections::store::Store {
+            pool: app.db.pool.clone(),
+            keys: app.db.keys.clone(),
+        };
+        let manager = connector_google_drive::oauth::Manager::new(config, store)?;
+        Arc::get_mut(&mut app)
+            .expect("composition has exclusive ownership")
+            .register(Arc::new(
+                connector_google_drive::managed::ManagedDrive::new(manager),
+            ))
+            .await?;
+    }
+    Ok(app)
 }
 pub fn router(app: Arc<App>) -> axum::Router {
     let mut router = http::router();

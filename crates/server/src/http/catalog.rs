@@ -14,7 +14,7 @@ pub async fn list(State(app): State<Arc<App>>, headers: HeaderMap) -> ApiResult 
             .bind(c.id())
             .fetch_one(&app.db.pool)
             .await?;
-        connectors.push(json!({"id":c.id(),"enabled":enabled,"tools":c.tools()}));
+        connectors.push(json!({"id":c.id(),"enabled":enabled,"tools":c.tools(),"resource_permissions_required":c.requires_resources()}));
     }
     Ok(output(
         json!({"connectors":connectors,"mcp_url":format!("{}/mcp/",app.config.origin),

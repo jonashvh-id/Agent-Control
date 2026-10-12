@@ -43,6 +43,9 @@ pub async fn prepare(app: &App, token: &str, p: &Proposal, correlation: &str) ->
             return Err(Error::new("invalid_tool_parameters", 422));
         }
         connector.validate(&p.tool, &parameters)?;
+        if connector.requires_resources() {
+            mode=crate::resources::authorize(&mut db,&resolved.id,&p.connector,&parameters,mode).await?;
+        }
         let previous=crate::execution::previous(&mut db,&resolved.id,&p.idempotency_key,&hash).await?;
         if let Some(record)=previous {
             let status=record.state.as_str();

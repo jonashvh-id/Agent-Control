@@ -21,6 +21,32 @@ impl Journal<'_> {
         decision: &str,
         receipt: Option<&Value>,
     ) -> Result<()> {
+        self.event_objects(db, action, decision, receipt, &[]).await
+    }
+    pub async fn event_objects(
+        &self,
+        db: &mut sqlx::SqliteConnection,
+        action: &str,
+        decision: &str,
+        receipt: Option<&Value>,
+        objects: &[String],
+    ) -> Result<()> {
+        let resource = if let Some(id) = self
+            .proposal
+            .parameters
+            .get("resource_id")
+            .and_then(Value::as_str)
+        {
+            sqlx::query_scalar::<_, String>("SELECT id FROM resources WHERE id=? AND connector=?")
+                .bind(id)
+                .bind(&self.proposal.connector)
+                .fetch_optional(&mut *db)
+                .await?
+                .unwrap_or_default()
+        } else {
+            String::new()
+        };
+        let object_refs = serde_json::json!(objects);
         audit::record(
             db,
             Event {
@@ -45,6 +71,8 @@ impl Journal<'_> {
                 input_hash: self.hash,
                 parameters: Some(&Value::Object(self.proposal.parameters.clone())),
                 receipt,
+                resource_ref: &resource,
+                object_refs: Some(&object_refs),
             },
         )
         .await

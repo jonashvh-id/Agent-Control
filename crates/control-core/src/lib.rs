@@ -2,6 +2,7 @@
 pub mod agents;
 pub mod approvals;
 pub mod audit;
+pub mod connections;
 pub mod connector;
 pub mod error;
 pub mod execution;
@@ -9,8 +10,10 @@ pub mod gateway;
 pub mod identity;
 pub mod lifecycle;
 pub mod models;
+pub mod operations;
 pub mod persistence;
 pub mod policy;
+pub mod resources;
 pub mod security;
 use std::sync::Arc;
 pub struct App {
@@ -62,5 +65,19 @@ impl App {
                     .map(|t| (c.clone(), t))
             })
             .ok_or(error::Error::new("tool_not_registered", 404))
+    }
+    pub async fn register(
+        &mut self,
+        connector: Arc<dyn connector::Connector>,
+    ) -> error::Result<()> {
+        if self.connectors.iter().any(|c| c.id() == connector.id()) {
+            return Err(error::Error::new("connector_already_registered", 409));
+        }
+        sqlx::query("INSERT OR IGNORE INTO connector_state(id,enabled) VALUES(?,0)")
+            .bind(connector.id())
+            .execute(&self.db.pool)
+            .await?;
+        self.connectors.push(connector);
+        Ok(())
     }
 }

@@ -1,7 +1,7 @@
 export const applicationName = id => ({github:'GitHub','google-drive':'Google Drive'}[id] || id);
 export const toolName = (connector, tool) => ({'github:issues.list':'Read issues','github:issues.create':'Create an issue',
   'google-drive:files.search':'Find documents','google-drive:files.read':'Read a document'}[`${connector}:${tool}`] || tool);
-export const actorName = event => event.actor_kind === 'human' ? event.human_name || 'Human operator' : event.agent_name || 'Unknown requester';
+export const actorName = event => event.actor_kind === 'human' ? event.human_name || 'Human operator' : event.actor_kind === 'system' ? 'Agent Control' : event.agent_name || 'Unknown requester';
 const reasons = {
   authorized:'Available with a current credential. Native application permissions still apply.',
   default_deny:'No permission has been set for this tool. Choose a policy to grant access.',
@@ -25,6 +25,20 @@ const reasons = {
   google_file_denied:'This document is outside the configured file allowlist.',
   google_file_type_unsupported:'This pilot reads Google Docs and plain-text files only.',
   google_credential_unavailable:'The operator must configure or rotate the dedicated Google credential.',
+  connection_attention_required:'The Google connection needs sign-in or a successful native perimeter check. Open Applications and Resources.',
+  resource_permission_denied:'No current permission grants access to this folder. Tool permissions alone do not grant resource access.',
+  google_native_access_too_broad:'The dedicated Google account can see objects outside selected folders. Reduce its native sharing.',
+  google_native_extent_incomplete:'Google could not provide a complete inventory. Access remains blocked.',
+  google_native_extent_too_large:'The native inventory exceeds the bounded pilot check. Use a smaller dedicated reader perimeter.',
+  google_reader_folder_required:'This resource must be a Google folder without editing capability. Check the dedicated identity and its native Reader role.',
+  google_folders_required:'Select reader folders and verify native access before assigning agent access.',
+  google_use_specific_resource:'This nested folder has its own resource boundary. Use its specific resource permission.',
+  google_file_outside_resource:'The document is outside the chosen folder or its parent chain cannot be verified.',
+  google_connection_required:'Connect the dedicated Google identity in Applications.',
+  google_reauthentication_required:'Google revoked or expired the refresh grant. Reconnect the dedicated account.',
+  google_oauth_scope_rejected:'Google returned unexpected permissions. The connection was refused.',
+  google_refresh_unavailable:'Google token renewal is temporarily unavailable. Access remains blocked.',
+  connection_changed:'The connection or folder set changed during verification. Verify the current perimeter again.',
   tool_not_registered:'This tool is not registered. A policy alone does not install an application.',
   connector_timeout:'The provider did not finish in time. Its outcome may be uncertain; a dispatched write must not be retried.',
 };

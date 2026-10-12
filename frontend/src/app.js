@@ -9,11 +9,12 @@ import { approvalsPage } from './features/approvals.js';
 import { auditPage } from './pages/audit.js';
 import { integrationsPage } from './pages/integrations.js';
 import { settingsPage } from './pages/settings.js';
+import { resourcesPage } from './features/resources.js';
 import { securityPage } from './pages/security.js';
 const root = document.querySelector('#app');
 let actor, layout, generation = 0;
-const pages = { overview: () => overview(actor), agents: () => agentsPage(render,actor), policies: () => policiesPage(render,actor),
-  approvals: () => approvalsPage(render), audit:auditPage, integrations:() => integrationsPage(render,actor), settings:settingsPage, security:() => securityPage(render,actor) };
+const pages = { overview: () => overview(actor,render), agents: () => agentsPage(render,actor), policies: () => policiesPage(render,actor),
+  approvals: () => approvalsPage(render), audit:auditPage, integrations:() => integrationsPage(render,actor), resources:()=>resourcesPage(render,actor),settings:settingsPage, security:() => securityPage(render,actor) };
 async function render() {
   if (!actor || !layout) return;
   const version = ++generation;
