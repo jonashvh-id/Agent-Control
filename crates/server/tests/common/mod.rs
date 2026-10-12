@@ -141,8 +141,12 @@ impl Harness {
                 connector_github::GitHub::new(
                     connector_github::Config {
                         repositories: vec!["jonashvh-id/Agent-Control".into()],
-                        token_file: None,
-                        credential_source: "gh-demo".into(),
+                        token_file: Some(
+                            std::env::var("AGENT_CONTROL_PILOT_GITHUB_TOKEN_FILE")
+                                .map(std::path::PathBuf::from)
+                                .expect("Live provider pilot requires an explicit credential file"),
+                        ),
+                        credential_source: "file".into(),
                         timeout: std::time::Duration::from_secs(10),
                     },
                     true,
