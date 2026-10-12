@@ -13,10 +13,10 @@ impl Config {
             regex::Regex::new(r"^[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_.-]{1,100}$").unwrap();
         if self.repositories.is_empty()
             || self.repositories.len() > 20
-            || self.repositories.iter().any(|r| {
-                !re.is_match(r)
-                    || matches!(r.split('/').nth(1), Some("." | ".."))
-            })
+            || self
+                .repositories
+                .iter()
+                .any(|r| !re.is_match(r) || matches!(r.split('/').nth(1), Some("." | "..")))
             || self.timeout.is_zero()
             || self.timeout.as_secs_f64() > 15.
         {
