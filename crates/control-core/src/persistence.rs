@@ -107,7 +107,11 @@ pub fn row_json(row: &sqlx::sqlite::SqliteRow) -> serde_json::Value {
                     let s: String = row.get(name);
                     if matches!(
                         name,
-                        "scopes" | "input_summary" | "result_summary" | "result_receipt"
+                        "scopes"
+                            | "input_summary"
+                            | "result_summary"
+                            | "result_receipt"
+                            | "object_refs"
                     ) {
                         serde_json::from_str(&s).unwrap_or(serde_json::Value::Null)
                     } else {

@@ -36,3 +36,6 @@ The pinned reference is Python Phase 2 commit `b946766e705856131b59f386b5ef65731
 Tests are located in `crates/server/tests`, `crates/control-core/tests/security.rs` and `crates/connector-github/src/adapter/tests.rs` and `adapter/tests/governance.rs`. Module and source/destination details are in [RUST_MODULE_MAP.md](RUST_MODULE_MAP.md) and [RUST_MIGRATION_REPORT.md](RUST_MIGRATION_REPORT.md). Actual command results and coverage limits are in [MIGRATION_VALIDATION.md](MIGRATION_VALIDATION.md).
 
 The Rust implementation strengthens explicit uncertainty/state transitions, single-process recovery, library-backed memory handling and bounded concurrent work. Authentication/token/preview storage formats differ because Rust uses new isolated data. No live legacy migration is claimed. Local database operators, admitted-I/O cancellation, managed vaults, tenant isolation, external audit integrity, SSO/MFA and MCP OAuth retain the limitations documented in SECURITY_BOUNDARIES.md.
+
+
+The v0.5 OAuth/resource/operations extension preserves the four-crate Rust foundation. Its current contract, limitations and validation are recorded in [Phase 4](docs/PHASE4_OAUTH_RESOURCES.md); historical migration counts above describe their original checkpoint.

@@ -17,7 +17,18 @@ async fn mark(
         return Err(Error::new("approval_binding_mismatch", 403));
     }
     let mut db = app.db.write().await?;
-    let (_, mode) = authorization::check(app, &mut db, token, &p.connector, &prepared.tool).await?;
+    let (actor, mut mode) =
+        authorization::check(app, &mut db, token, &p.connector, &prepared.tool).await?;
+    if prepared.connector.requires_resources() {
+        mode = crate::resources::authorize(
+            &mut db,
+            &actor.id,
+            &p.connector,
+            &Value::Object(p.parameters.clone()),
+            mode,
+        )
+        .await?;
+    }
     if mode == Policy::Ask && prepared.approval_id.is_empty() {
         return Err(Error::new("approval_required_after_policy_change", 403));
     }
@@ -95,6 +106,17 @@ pub async fn execute(
     }
     let receipt = x.connector.receipt(&result);
     let mut db = app.db.write().await?;
+    let objects = if x.connector.requires_resources() {
+        crate::resources::observe(
+            &mut db,
+            &app.db.keys,
+            p.parameters["resource_id"].as_str().unwrap(),
+            x.connector.observations(&result),
+        )
+        .await?
+    } else {
+        vec![]
+    };
     crate::execution::finish(
         &mut db,
         &x.execution_id,
@@ -108,11 +130,12 @@ pub async fn execute(
         .execute(&mut *db)
         .await?;
     journal(p, &x, c)
-        .event(
+        .event_objects(
             &mut db,
             "execution.executed",
             mode.as_str(),
             receipt.as_ref(),
+            &objects,
         )
         .await?;
     db.commit().await?;

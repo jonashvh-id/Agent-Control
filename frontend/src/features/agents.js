@@ -34,7 +34,7 @@ async function details(id,refresh,catalog) {
   body.append(el('h3',{},'Who can access what'),access.tools.length ? table(['Application / action','Policy','Effective access'],access.tools.map(t => [
     el('div',{},applicationName(t.connector),el('small',{},toolName(t.connector,t.tool))),
     el('div',{},badge(t.explicit_policy),t.requires_confirmation ? el('small',{},'Human approval always required') : null),
-    el('div',{},badge(t.effective_policy),el('small',{},accessSummary(t)))
+    el('div',{},badge(t.effective_policy),el('small',{},accessSummary(t)),t.resource_permissions_required?el('div',{},(t.resources||[]).map(r=>el('small',{},`${r.name} · resource ${r.mode}`)),el('a',{href:'#resources',onClick:()=>modal.close()},'Review folder permissions')):null)
   ])) : empty('No applications configured','Configure an application before granting access.'),
   el('div',{class:'form-actions'},button('Edit assigned capabilities',() => dialog('Assigned capabilities',[scopeChoices(catalog,agent.scopes)],'Save capabilities',async values => {
     await api(`/agents/${id}/scopes`,{method:'PATCH',body:{scopes:selectedScopes(values)}});modal.close();await refresh();

@@ -13,6 +13,10 @@ reqwest.workspace = true
 regex = "1"
 jsonschema = { version = "0.33", default-features = false }
 zeroize = "1"
+serde.workspace = true
+sqlx.workspace = true
+oauth2 = { version = "5.0", default-features = false, features = ["reqwest", "rustls-tls"] }
+url = "2"
 
 [dev-dependencies]
 axum.workspace = true

@@ -1,21 +1,36 @@
 import { api } from '../services/api.js';
-import { el, heading, panel, empty, badge, date, table } from '../components/elements.js';
-export async function overview(actor) {
-  const [settings, approvals, audit, integrations] = await Promise.all([api('/settings'),api('/approvals'),api('/audit'),api('/integrations')]);
-  const agents = actor.role === 'admin' ? await api('/agents') : null;
-  const metrics = [['Registered agents', agents?.length ?? 'Admin view', 'Identities in this instance'],
-    ['Pending approvals', approvals.filter(a => a.status === 'pending').length, 'Awaiting human review'],
-    ['Configured applications', integrations.length, 'Trusted execution adapters'],
-    ['Default policy', 'Deny', 'Explicit permission required']];
-  return el('div', {}, heading('Govern with confidence.', 'A clear view of your agent identities, decisions and execution boundaries.'),
-    el('div', { class: 'foundation-banner' }, el('div', {}, el('strong', {}, 'Your next steps: configure applications, register an agent, and choose its permissions.'),
-      el('p', {}, 'Connect Codex with a scoped credential. Requests governed by ASK appear in Approvals; blocked actions are explained in Activity & audit.')), badge('Product pilot', 'foundation')),
-    el('div', { class: 'metrics' }, metrics.map(([label,value,description]) => el('section', { class: 'metric' }, el('span', {}, label), el('strong', {}, value), el('small', {}, description)))),
-    el('div', { class: 'overview-grid' }, panel('Recent activity', audit.length ? table(['Operation','Decision','Time'], audit.slice(0,6).map(e => [e.action,badge(e.decision),date(e.created_at)])) : empty('No activity recorded', 'Administration and gateway events will appear here.')),
-      panel('Execution boundary', el('div', { class: 'boundary' }, el('div', {}, 'External agent', el('small', {}, 'Untrusted proposals')), el('span', {}, '↓'),
-        el('div', { class: 'boundary-gateway' }, 'Agent Control', el('small', {}, 'Identity → Policy → Approval → Audit')), el('span', {}, '↓'),
-        el('div', {}, 'Trusted connector', el('small', {}, integrations.length ? `${integrations.length} registered` : 'No external adapters configured'))))),
-    panel('Control state', el('div', { class: 'status-list' }, el('div', {}, 'Emergency stop', badge(settings.emergency_stop ? 'Stopped' : 'Inactive', settings.emergency_stop ? 'denied' : 'neutral')),
-      el('div', {}, 'Execution', badge(settings.execution_enabled ? 'Enabled by configuration' : 'Disabled', 'neutral')),
-      el('div', {}, 'Coverage', el('span', {}, settings.coverage)))));
+import { el,heading,panel,empty,badge,date,table,button } from '../components/elements.js';
+import { actorName,toolName,applicationName,explanation } from '../services/explanations.js';
+export function agentObservation(agent,now=Date.now()) {
+  if(agent.status!=='active')return agent.status;
+  if(!agent.active_credentials)return 'no active credential';
+  const seen=Date.parse(agent.last_request_at);
+  return Number.isFinite(seen)&&seen<=now&&now-seen<600000?'request observed recently':'credential configured · no recent request';
+}
+export async function overview(actor,refresh) {
+  if(actor.role!=='admin') {const requests=await api('/approvals');return el('div',{},heading('Review queue','Exact requests awaiting your decision.'),panel('Pending approvals',table(['Agent','Action','State'],requests.filter(a=>a.status==='pending').map(a=>[a.agent_name,toolName(a.connector,a.tool),badge(a.status)]))),button('Open approvals',()=>{location.hash='approvals';}));}
+  const [data,settings]=await Promise.all([api('/operations'),api('/settings')]);const events=data.activity;
+  const metrics=[['Completed actions · 24h',data.metrics.completed_24h],['Refused attempts · 24h',data.metrics.denied_attempts_24h],['Awaiting approval',data.metrics.pending_approvals],['Uncertain outcomes',data.metrics.uncertain_executions]];
+  const connectionIssues=data.connections.filter(c=>c.connection.state!=='connected'||c.connection.native_verification?.verified!==true);
+  const accesses=events.filter(e=>e.action==='execution.executed'&&e.objects?.length).slice(0,20);
+  const refused=events.filter(e=>e.decision==='deny').slice(0,10);
+  return el('div',{},heading('Operations','Current identities, resource access and decisions from your control plane.',button('Refresh',refresh,'secondary')),
+    el('div',{class:'metrics'},metrics.map(([name,value])=>el('section',{class:'metric'},el('span',{},name),el('strong',{},value)))),
+    panel('Intervention queue',el('div',{class:'prose'},
+      settings.emergency_stop?el('p',{class:'error'},'Emergency stop is active. New actions are refused.'):null,
+      !settings.execution_enabled?el('p',{class:'notice'},'Execution is disabled by server configuration.'):null,
+      data.metrics.pending_approvals?el('p',{},`${data.metrics.pending_approvals} exact requests await review. `,el('a',{href:'#approvals'},'Open approvals')):null,
+      data.metrics.uncertain_executions?el('p',{class:'error'},'Some provider outcomes are uncertain. Investigate their correlation IDs; do not blindly repeat writes.'):null,
+      connectionIssues.map(c=>el('p',{},applicationName(c.connector),' · ',badge(c.connection.state),
+        el('small',{},c.connection.native_verification?.reason?explanation(c.connection.native_verification.reason):'Configure or verify native access in Applications.'),el('a',{href:'#integrations'},'Review connection'))),
+      !data.metrics.pending_approvals&&!data.metrics.uncertain_executions&&!connectionIssues.length&&!settings.emergency_stop?el('p',{},'No recorded intervention is pending.'):null)),
+    panel('Agents and observed requests',data.agents.length?table(['Agent','Current state','Last request / completed action','Refusals · 24h'],data.agents.map(a=>[
+      el('div',{},el('strong',{},a.name),el('small',{},a.runtime)),el('div',{},badge(a.status),el('small',{},agentObservation(a))),
+      el('div',{},date(a.last_request_at),el('small',{},`Completed: ${date(a.last_used_at)}`)),a.denied_attempts_24h])):empty('No agents registered','Register one, assign tool/resource permissions, then issue a scoped credential.')),
+    el('p',{class:'footnote'},data.presence),
+    panel('Data consulted',accesses.length?table(['Who','Application / action','Folder','Data returned','Time'],accesses.map(e=>[
+      actorName(e),el('div',{},applicationName(e.connector),el('small',{},toolName(e.connector,e.tool))),e.resource_name,
+      e.objects.map(o=>el('div',{},el('strong',{},o.name),el('small',{},e.tool==='files.search'?'Metadata only':'Bounded document text'))),date(e.created_at)])):empty('No resource observations yet','Managed resource access records encrypted metadata for operator views. Legacy pilot events have no document observations; their contents cannot be reconstructed.')),
+    panel('Recent refusals',refused.length?table(['Who','Action','Reason','Trace'],refused.map(e=>[actorName(e),toolName(e.connector,e.tool)||e.action,explanation(e.action),el('code',{},e.correlation_id)])):empty('No refusal recorded','Blocked attempts appear here with a reason and correlation ID.')),
+    el('p',{class:'footnote'},'Stored audit contains trusted resource references and keyed object references. Metadata is encrypted separately; document text and credentials are excluded. Latest operator activity is bounded to 100 events.'));
 }

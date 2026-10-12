@@ -40,3 +40,6 @@ The original Python suite was rerun before migration: 65 passed. A pinned-refere
 The detailed current Rust, frontend, copied-executable, release/CLI/browser, coverage and source-preservation results are in [MIGRATION_VALIDATION.md](MIGRATION_VALIDATION.md). [SECURITY_PARITY.md](SECURITY_PARITY.md) maps every critical invariant to concrete tests. No extra live GitHub issue was created; the existing issue #1 is historical Python Phase 2 evidence, not a Rust live-write claim.
 
 The runtime remains a governance foundation, with bearer provisioning and local private files. OAuth MCP, SSO/MFA, managed vaults, tenancy, reconciliation/cancellation, external audit integrity and independent production/load/security certification remain future work. No public deployment, release publication or live customer-data migration is performed.
+
+
+The v0.5 OAuth/resource/operations extension preserves the four-crate Rust foundation. Its current contract, limitations and validation are recorded in [Phase 4](docs/PHASE4_OAUTH_RESOURCES.md); historical migration counts above describe their original checkpoint.

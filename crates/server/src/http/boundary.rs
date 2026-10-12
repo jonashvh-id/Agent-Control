@@ -10,6 +10,9 @@ use control_core::{App, agents};
 use std::sync::Arc;
 pub async fn guard(State(app): State<Arc<App>>, request: Request, next: Next) -> Response {
     let path = request.uri().path();
+    if request.uri().to_string().len() > 8192 {
+        return error("request_too_large", 413).into_response();
+    }
     let mcp = path == "/mcp/" || path == "/mcp";
     let expected = match crate::config::validate_origin(&app.config) {
         Ok(u) => u,

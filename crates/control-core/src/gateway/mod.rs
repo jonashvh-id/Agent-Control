@@ -32,6 +32,20 @@ pub async fn discover(app: &App, token: &str) -> Result<Vec<Value>> {
                 value["policy"] = serde_json::json!(mode);
                 value["requires_confirmation"] =
                     serde_json::json!(mode == crate::models::Policy::Ask);
+                if c.requires_resources() {
+                    let actor = crate::agents::resolve(app, &mut db, token).await?;
+                    let mut resources =
+                        crate::resources::available(&mut db, &actor.id, c.id()).await?;
+                    crate::resources::labels(&mut db, &app.db.keys, &mut resources).await?;
+                    value["input_schema"]["properties"]["resource_id"]["enum"] = serde_json::json!(
+                        resources
+                            .iter()
+                            .map(|r| r["id"].clone())
+                            .collect::<Vec<_>>()
+                    );
+                    value["resources"] = serde_json::json!(resources);
+                    value["input_schema"]["properties"]["resource_id"]["oneOf"]=serde_json::json!(resources.iter().map(|r|serde_json::json!({"const":r["id"],"title":r["name"].as_str().unwrap_or("").chars().take(120).collect::<String>()})).collect::<Vec<_>>());
+                }
                 tools.push(value);
             }
         }
