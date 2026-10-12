@@ -7,6 +7,7 @@ pub type Configuration = (
     Config,
     Option<connector_github::Config>,
     Option<connector_google_drive::Config>,
+    Option<connector_google_drive::oauth::Config>,
 );
 pub fn from_env() -> Result<Configuration> {
     let value = |key: &str, default: &str| std::env::var(key).unwrap_or(default.into());
@@ -55,7 +56,19 @@ pub fn from_env() -> Result<Configuration> {
             timeout: std::time::Duration::from_secs(10),
         })
     };
-    Ok((config, github, drive))
+    let oauth = match (
+        std::env::var("AGENT_CONTROL_GOOGLE_OAUTH_CLIENT_ID").ok(),
+        std::env::var("AGENT_CONTROL_GOOGLE_OAUTH_SECRET_FILE").ok(),
+    ) {
+        (None, None) => None,
+        (Some(client_id), Some(secret_file)) => Some(connector_google_drive::oauth::Config {
+            client_id,
+            secret_file: secret_file.into(),
+            origin: config.origin.clone(),
+        }),
+        _ => return Err(Error::new("invalid_google_oauth_configuration", 400)),
+    };
+    Ok((config, github, drive, oauth))
 }
 pub fn validate_origin(c: &Config) -> Result<url::Url> {
     let url = url::Url::parse(&c.origin).map_err(|_| Error::new("invalid_origin", 400))?;

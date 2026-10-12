@@ -7,7 +7,7 @@ use axum::{
     extract::{Path, State},
     http::HeaderMap,
 };
-use control_core::{App, approvals, audit, lifecycle, policy};
+use control_core::{App, approvals, lifecycle, policy};
 use serde::Deserialize;
 use serde_json::json;
 use std::sync::Arc;
@@ -55,7 +55,7 @@ pub async fn decide(
 }
 pub async fn audit(State(app): State<Arc<App>>, h: HeaderMap) -> ApiResult {
     auth::human(&app, &h, false, false).await?;
-    Ok(output(audit::list(&app.db.pool).await?))
+    Ok(output(control_core::operations::activity(&app).await?))
 }
 pub async fn integrations(State(app): State<Arc<App>>, h: HeaderMap) -> ApiResult {
     auth::human(&app, &h, false, false).await?;

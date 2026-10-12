@@ -33,5 +33,27 @@ pub async fn for_actor(
     if !app.config.execution_enabled {
         return Err(Error::new("execution_disabled", 503));
     }
+    let (provider, _) = app.tool(connector, &tool.name)?;
+    if provider.requires_resources() {
+        let row: Option<(String, String)> =
+            sqlx::query_as("SELECT state,verification FROM connection_secrets WHERE connector=?")
+                .bind(connector)
+                .fetch_optional(&mut *db)
+                .await?;
+        if !row.is_some_and(|(state, v)| {
+            state == "connected"
+                && serde_json::from_str::<serde_json::Value>(&v)
+                    .is_ok_and(|v| v["verified"] == true)
+        }) {
+            return Err(Error::new("connection_attention_required", 403));
+        }
+        let resources = crate::resources::available(db, &actor.id, connector).await?;
+        if resources.is_empty() {
+            return Err(Error::new("resource_permission_denied", 403));
+        }
+        if mode == Policy::Allow && resources.iter().all(|r| r["mode"] == "ask") {
+            return Ok(Policy::Ask);
+        }
+    }
     Ok(mode)
 }

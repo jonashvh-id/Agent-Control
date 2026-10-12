@@ -1,5 +1,8 @@
 use crate::error::{Error, Result};
-use aes_gcm::{Aes256Gcm, KeyInit, aead::Aead};
+use aes_gcm::{
+    Aes256Gcm, KeyInit,
+    aead::{Aead, Payload},
+};
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
 use hmac::{Hmac, Mac};
 use rand::{RngCore, rngs::OsRng};
@@ -56,6 +59,51 @@ impl Keys {
             .map_err(|_| Error::new("approval_preview_unavailable", 409))?;
         serde_json::from_slice(&plaintext)
             .map_err(|_| Error::new("approval_preview_unavailable", 409))
+    }
+    pub fn seal_private(&self, context: &str, value: &Value) -> Result<String> {
+        let mut sha = Sha256::new();
+        sha.update(b"private-store-rust-v1:");
+        sha.update(&*self.0);
+        let cipher = Aes256Gcm::new(&sha.finalize());
+        let mut nonce = [0u8; 12];
+        OsRng.fill_bytes(&mut nonce);
+        let plaintext = Zeroizing::new(value.to_string());
+        let encrypted = cipher
+            .encrypt(
+                (&nonce).into(),
+                Payload {
+                    msg: plaintext.as_bytes(),
+                    aad: context.as_bytes(),
+                },
+            )
+            .map_err(|_| Error::new("private_store_unavailable", 503))?;
+        let mut data = nonce.to_vec();
+        data.extend(encrypted);
+        Ok(URL_SAFE_NO_PAD.encode(data))
+    }
+    pub fn open_private(&self, context: &str, encoded: &str) -> Result<Value> {
+        let data = URL_SAFE_NO_PAD
+            .decode(encoded)
+            .map_err(|_| Error::new("private_store_unavailable", 503))?;
+        if data.len() < 28 {
+            return Err(Error::new("private_store_unavailable", 503));
+        }
+        let mut sha = Sha256::new();
+        sha.update(b"private-store-rust-v1:");
+        sha.update(&*self.0);
+        let cipher = Aes256Gcm::new(&sha.finalize());
+        let plaintext = Zeroizing::new(
+            cipher
+                .decrypt(
+                    (&data[..12]).into(),
+                    Payload {
+                        msg: &data[12..],
+                        aad: context.as_bytes(),
+                    },
+                )
+                .map_err(|_| Error::new("private_store_unavailable", 503))?,
+        );
+        serde_json::from_slice(&plaintext).map_err(|_| Error::new("private_store_unavailable", 503))
     }
 }
 pub fn random_token() -> String {

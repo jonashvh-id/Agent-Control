@@ -18,4 +18,6 @@ pub struct Event<'a> {
     pub input_hash: &'a str,
     pub parameters: Option<&'a Value>,
     pub receipt: Option<&'a Value>,
+    pub resource_ref: &'a str,
+    pub object_refs: Option<&'a Value>,
 }

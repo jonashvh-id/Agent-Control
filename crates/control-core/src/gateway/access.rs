@@ -24,6 +24,8 @@ pub async fn describe(app: &App, id: &str) -> Result<Value> {
             };
             let mut effective = Policy::Deny;
             let mut grants = vec![];
+            let mut resources = crate::resources::available(&mut db, id, connector.id()).await?;
+            crate::resources::labels(&mut db, &app.db.keys, &mut resources).await?;
             for credential in credentials
                 .as_array()
                 .unwrap()
@@ -71,7 +73,7 @@ pub async fn describe(app: &App, id: &str) -> Result<Value> {
             tools.push(json!({"connector":connector.id(),"tool":tool.name,"description":tool.description,
                 "required_scopes":tool.required_scopes,"explicit_policy":explicit.unwrap_or("deny".into()),
                 "effective_policy":effective,"reason":reason,"requires_confirmation":tool.requires_confirmation,
-                "authorized_credentials":grants}));
+                "authorized_credentials":grants,"resources":resources,"resource_permissions_required":connector.requires_resources()}));
         }
     }
     db.commit().await?;

@@ -62,3 +62,6 @@ The API comparison is 28 scenarios, not exhaustive differential proof for every 
 Private-file guarantees currently require Unix; local macOS arm64 and the Ubuntu CI job provide platform checks. A TLS reverse proxy and dedicated repository-scoped native credential are needed for operational network use. Revocation prevents new admissions but cannot undo provider calls already admitted. No exactly-once provider claim is made.
 
 Existing SQLite data is not automatically migrated; rollback and future migration require the separate plan in `docs/rust/DATA_MIGRATION.md`. Python remains historical reference, never a primary runtime dependency. The migration is prepared on a dedicated branch; fusion requires a successful Ubuntu job for the reviewed candidate revision. See [CODE_REVIEW.md](docs/rust/CODE_REVIEW.md) for corrections and review limits.
+
+
+The v0.5 OAuth/resource/operations extension preserves the four-crate Rust foundation. Its current contract, limitations and validation are recorded in [Phase 4](docs/PHASE4_OAUTH_RESOURCES.md); historical migration counts above describe their original checkpoint.

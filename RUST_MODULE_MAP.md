@@ -46,3 +46,21 @@ Repository functions accept SQLx connections explicitly, allowing domain service
 Historical Python paths are in `reference/python/`; they are not dependencies of these crates.
 
 Frontend responsibilities remain separate: `features/agents.js` registry/effective access, `features/connect.js` scoped Codex setup, `features/policies.js` permissions, `features/approvals.js` exact human review, `features/google-setup.js` operator guidance, and `services/explanations.js` presentation of reasons. `scripts/codex_pilot.py` is optional model validation tooling, never application runtime.
+
+## OAuth, resources and operations (v0.5)
+
+Four crates and dependency direction are unchanged. No gateway/provider monolith was introduced.
+
+| Module | Responsibility |
+|---|---|
+| `control-core/connections/` | Typed administration port, encrypted connection repository, bound one-use transactions and generation checks; no Google HTTP. |
+| `control-core/resources/` | Encrypted resource registry/observations and per-agent grants; pure restrictive policy combination; no provider calls. |
+| `control-core/operations/` | Operator projections from actual ledger/current credentials, with separately decrypted metadata; no execution. |
+| `connector-google-drive/oauth/config,http,flow,tokens` | Fixed Google endpoints, maintained OAuth2/PKCE, administration, bounded exchange/serialized refresh; no HTTP routes or agent policies. |
+| `connector-google-drive/native_scope.rs` | Bounded native inventory, reader capability checks and current ancestry; configured nested boundaries. |
+| `connector-google-drive/managed/` | Search/read execution and safe observations; root-scoped schemas; no human approval logic. |
+| `server/http/connections,resources.rs` | Human-only HTTP/CSRF/callback cookie and DTOs; domain/provider ports do the work. |
+| `migrations/0002_connections_resources.sql` | Additive isolated-runtime schema; original migration unchanged. |
+| `frontend/features/google-setup,resources.js`, `pages/overview.js` | Real API configuration, folder/agent permissions and operations; no native token storage. |
+
+See [Phase 4 configuration and validation](docs/PHASE4_OAUTH_RESOURCES.md).

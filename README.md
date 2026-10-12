@@ -37,18 +37,22 @@ Local `gh-demo` can read the existing gh keychain credential in memory, exclusiv
 
 An idempotency key binds one request. Dispatched or uncertain writes are never retried automatically; a repeat returns a minimized receipt or a refusal. Revocation blocks new admissions, while an already admitted provider call may finish. This does not provide an exactly-once provider guarantee.
 
-## Google Drive and the product pilot
+## Google Drive: integrated OAuth and folder permissions
 
-Google Drive searches names within 1–20 explicitly configured file IDs and reads bounded Google Docs or plain-text content. It exposes no editing, sharing or deletion. Its native access token is reread from an owned mode-0600 file; Google permissions and expiration remain authoritative.
+Register a Web OAuth client in your own Google Cloud project, enable Drive API, and register the exact callback URI shown by **Applications → Configure Google OAuth**. Use a dedicated Google identity shared as **Reader** only on the intended folders. No Google access token is copied into the dashboard or supplied to an agent.
 
 ```sh
-export AGENT_CONTROL_GOOGLE_DRIVE_FILES=YOUR_TEST_DOCUMENT_ID
-export AGENT_CONTROL_GOOGLE_DRIVE_TOKEN_FILE=/absolute/private/path/google-access.token
+export AGENT_CONTROL_GOOGLE_OAUTH_CLIENT_ID=YOUR_CLIENT.apps.googleusercontent.com
+export AGENT_CONTROL_GOOGLE_OAUTH_SECRET_FILE=/absolute/private/path/google-client.secret
 ```
 
-Configure this alongside the execution flag and chosen GitHub settings before starting the server. In Applications, **Set up Google access** explains the separate native authorization step. In Permissions, use `google-drive / files.search` ALLOW and `google-drive / files.read` ASK. Approvals display the exact file ID and character bound before a human decision. Registering or enabling the adapter does not authenticate it with Google.
+The secret file contains the OAuth client secret only, owned by the server operator, mode 0600, outside source control. Start the server with these variables and the execution flag when needed. From Applications, connect the dedicated reader account; in Resources, select its folders and verify the native perimeter. Grant each agent explicit folder permissions and tool permissions. The stricter DENY / ASK / ALLOW rule applies; a tool grant alone confers no folder access. Enable the application separately.
 
-The pilot accepts a dedicated short-lived token; integrated Google sign-in/refresh is not implemented. The chat’s Google connection cannot be reused as a server credential. See [Google Drive contract and setup](docs/api/MCP_GOOGLE_DRIVE.md), [Codex pilot instructions](docs/PHASE3.md) and [observed Phase 3 evidence](docs/reviews/PHASE3_REPORT.md). Real Codex has exercised native GitHub reads and native Google search/read through ASK, including replay, native refusal and platform revocation.
+Search returns bounded direct-child metadata; reading accepts Google Docs/plain text up to 6,000 characters. Each request includes an Agent Control `resource_id`. Discovery lists only the agent’s permitted resources. A configured nested folder is a separate boundary; its permission cannot be bypassed through a parent. Exact approvals include folder/document parameters. Operations shows observed requests, data returned, refusals and intervention counts without claiming persistent MCP online presence.
+
+Google has no read-only OAuth scope scoped to folder IDs. The server requests only `drive.readonly`; native resource restriction comes from the dedicated identity’s Google sharing. A bounded inventory and current folder ancestry are checked before each managed execution. These checks are snapshots, not proof of all ACLs or immediate cancellation of in-flight requests. Disabling a folder here does not change its native Google ACL.
+
+See [OAuth configuration and resource contract](docs/PHASE4_OAUTH_RESOURCES.md). The previous manually configured file-token adapter remains an explicit compatibility mode; it cannot be configured alongside integrated OAuth. The historical [Phase 3 pilot](docs/PHASE3.md) used that adapter. The new integrated OAuth flow has been validated against isolated providers; a live connection awaits the user’s Google Cloud client and dedicated reader identity.
 
 ## Validate
 
