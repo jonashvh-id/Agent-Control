@@ -23,10 +23,7 @@ pub async fn guard(State(app): State<Arc<App>>, request: Request, next: Next) ->
         .get("host")
         .and_then(|h| h.to_str().ok())
         .unwrap_or("");
-    let host = url::Url::parse(&format!("http://{authority}")).ok();
-    if host.as_ref().and_then(|u| u.host_str()) != expected.host_str()
-        || mcp && authority != &expected[url::Position::BeforeHost..url::Position::AfterPort]
-    {
+    if authority != &expected[url::Position::BeforeHost..url::Position::AfterPort] {
         return error("host_rejected", 400).into_response();
     }
     if request.headers().get_all("origin").iter().count() > 1 {

@@ -2,7 +2,7 @@
   "production_rust_files": 48,
   "largest": {
     "file": "crates/connector-github/src/adapter.rs",
-    "lines": 209
+    "lines": 215
   },
   "files_over_300": [],
   "files_over_400": []

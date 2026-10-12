@@ -1,8 +1,9 @@
 {
-  "rust_tests_passed": 110,
+  "rust_tests_passed": 112,
   "failed": 0,
   "optional_ignored": 2,
   "optional_parity_passed": true,
   "http_observations": 28,
-  "cross_sdk_passed": true
+  "cross_sdk_passed": true,
+  "review_validated_on": "2026-10-12"
 }

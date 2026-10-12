@@ -1,6 +1,6 @@
 # Rust migration report
 
-Agent Control's primary backend is a standalone Rust executable. Axum, Tokio, SQLx/SQLite, Serde, Tracing and the official Rust MCP SDK replace the Python/FastAPI application runtime. The existing JavaScript frontend and the two GitHub issue capabilities are retained. Work is on `migration/rust-backend`, based on `b946766e705856131b59f386b5ef657310f7dfdf`; the additive implementation checkpoint is `8cd480d`. Main and the original Git history are preserved.
+Agent Control's primary backend is a standalone Rust executable. Axum, Tokio, SQLx/SQLite, Serde, Tracing and the official Rust MCP SDK replace the Python/FastAPI application runtime. The existing JavaScript frontend and the two GitHub issue capabilities are retained. Work was prepared on `migration/rust-backend`, based on `b946766e705856131b59f386b5ef657310f7dfdf`; the additive implementation checkpoint is `8cd480d`. The original Git history is preserved; fusion is gated by reviewed local validation and Ubuntu CI.
 
 ## Migration and module provenance
 
@@ -29,7 +29,7 @@ Typed execution states distinguish prepared, dispatched, executed, failed and un
 
 Passwords use Argon2id rather than scrypt. Approval previews use authenticated AES-GCM rather than Fernet. Rust has its own private binary runtime key and ownership marker. These formats are intentionally separate from the old data; there is no automatic customer-data cutover. Future migration/rollback strategy is in `docs/rust/DATA_MIGRATION.md`.
 
-Compatible behaviors include current human/agent identity boundaries, scoped credentials, default DENY, mandatory issue confirmation, exact immutable approval binding, expiration/one-time consumption, revalidation, lifecycle controls, minimized audit and native GitHub permission enforcement. The existing admin API paths and MCP arguments remain. Version becomes 0.3.0; execution responses add explicit state details, credential detail scopes become JSON arrays, and nonintegral read pagination is rejected rather than silently defaulted. Explicit public origin and private listener port are separate for TLS proxies. Current flags retain case-insensitive true handling.
+Compatible behaviors include current human/agent identity boundaries, scoped credentials, default DENY, mandatory issue confirmation, exact immutable approval binding, expiration/one-time consumption, revalidation, lifecycle controls, minimized audit and native GitHub permission enforcement. The existing admin API paths and MCP arguments remain. Version becomes 0.3.0; execution responses add explicit state details, credential detail scopes become JSON arrays, and nonintegral read pagination is rejected rather than silently defaulted. Explicit public origin and private listener port are separate for TLS proxies. Current flags retain case-insensitive true handling. Final review requires the exact configured Host authority on both REST and MCP, and GitHub read previews include effective state/limit/page. See [CODE_REVIEW.md](docs/rust/CODE_REVIEW.md).
 
 ## Evidence and limits
 

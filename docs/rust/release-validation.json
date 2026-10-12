@@ -7,5 +7,9 @@
   "sha256": "d11042303659ce31cd369232d16645622500ac48b10588b28433173e7e1ba8d1",
   "public_deployment": false,
   "live_provider_writes": 0,
-  "latest_release_restarted_and_validated": true
+  "latest_release_restarted_and_validated": true,
+  "previous_validation_revision": "9f29a1ae44b05d890d8e2fd7530f2d9b1c9a157a",
+  "review_release_build": "passed",
+  "review_release_sha256": "8708e0a3ec1e4fdb699733f9f4185e527f74ba05cf845487cb7d5eba5ec1193b",
+  "review_release_size_bytes": 15187168
 }

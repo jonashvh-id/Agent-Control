@@ -232,6 +232,32 @@ async fn host_rejected() {
     );
 }
 #[tokio::test]
+async fn host_authority_rejected_on_rest() {
+    let h = Harness::new().await;
+    let expected = h.origin.strip_prefix("http://").unwrap();
+    for host in [
+        "127.0.0.1".to_string(),
+        "127.0.0.1:1".to_string(),
+        format!("{expected}/other"),
+        format!("{expected}?other"),
+        format!("user@{expected}"),
+    ] {
+        for path in ["/health", "/api/v1/auth/me", "/api/v1/gateway/tools"] {
+            let response = h
+                .client
+                .get(format!("{}{path}", h.origin))
+                .header("host", &host)
+                .header("cookie", &h.cookie)
+                .bearer_auth(&h.token)
+                .send()
+                .await
+                .unwrap();
+            assert_eq!(response.status(), 400, "accepted Host {host} at {path}");
+        }
+    }
+    assert_eq!(h.calls(), 0);
+}
+#[tokio::test]
 async fn frontend_and_admin_compatibility() {
     let h = Harness::new().await;
     for path in [

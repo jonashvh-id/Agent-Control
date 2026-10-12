@@ -1,6 +1,6 @@
 # Migration validation
 
-Validation performed on macOS arm64 with Rust 1.89, against isolated owned data and providers. The primary application runtime uses Rust and embedded JavaScript assets. No live GitHub write, deployment, release publication or customer-data migration is part of these checks.
+Local validation performed on macOS arm64 with Rust 1.89, against isolated owned data and providers. Ubuntu 24.04 / Rust 1.89 is exercised by [GitHub Actions](.github/workflows/ci.yml); its result is a merge gate for [PR #2](https://github.com/jonashvh-id/Agent-Control/pull/2). The primary application runtime uses Rust and embedded JavaScript assets. No live GitHub write, deployment, release publication or customer-data migration is part of these checks.
 
 ## Commands
 
@@ -28,14 +28,14 @@ Optional coverage:
 cargo llvm-cov --workspace --ignore-filename-regex '/tests/|/adapter/tests.rs' --json --output-path /private/test-output/coverage.json
 ```
 
-This uses cargo-llvm-cov 0.6.21 and llvm-tools-preview. The measured production-file coverage is 89.88% of lines and 85.29% of regions; details are in `docs/rust/coverage-summary.json`. Stable Rust reports line/region coverage here; it is not the same metric as the historical combined Python statement/branch percentage. Coverage is evidence about exercised paths, not a security certification. Entry-point and optional demo/config paths have gaps; CLI/standalone/browser checks are separately recorded.
+This uses cargo-llvm-cov 0.6.21 and llvm-tools-preview. At checkpoint `9f29a1a`, the measured production-file coverage was 89.88% of lines and 85.29% of regions; details are in `docs/rust/coverage-summary.json`. Stable Rust reports line/region coverage here; it is not the same metric as the historical combined Python statement/branch percentage. Coverage is evidence about exercised paths, not a security certification. Entry-point and optional demo/config paths have gaps; CLI/standalone/browser checks are separately recorded.
 
 ## Observed results
 
 | Check | Result and evidence |
 |---|---|
 | Original Python baseline | 65 tests passed before changes; pinned reference preserved in history/archive |
-| Rust automated checks | 110 passed, zero failures; two opt-in tests excluded from routine run; `docs/rust/test-results.json` |
+| Rust automated checks | 112 passed, zero failures; two opt-in tests excluded from routine run; `docs/rust/test-results.json` |
 | Cross-language comparison | One opt-in validation passed; 28 matching HTTP observations, plus separate-process Python SDK workflow |
 | Native MCP client | Official Rust SDK connects over HTTP, discovers permitted tools, reads, receives ASK, consumes a human-approved exact request, receives a replay receipt and is blocked after revocation |
 | Actual GitHub adapter | Native HTTP fixtures verify headers/path, safe DTOs, native denials, redirects, oversized/malformed results, real timeout uncertainty, private credential rotation/permissions and domain approval enforcement |
@@ -57,6 +57,6 @@ The behavioral transcript intentionally compares meaningful statuses/fields rath
 
 The API comparison is 28 scenarios, not exhaustive differential proof for every possible input. The Rust suite adds sensitive boundary cases but does not prove absence of bugs. Supply-chain advisory auditing, penetration/load testing, enterprise certification, OAuth MCP, SSO/MFA, managed vaults, tenancy, external audit integrity and reconciliation/cancellation are not completed by this migration.
 
-Private-file guarantees currently require Unix; only macOS arm64 has been built/run here. A TLS reverse proxy and dedicated repository-scoped native credential are needed for operational network use. Revocation prevents new admissions but cannot undo provider calls already admitted. No exactly-once provider claim is made.
+Private-file guarantees currently require Unix; local macOS arm64 and the Ubuntu CI job provide platform checks. A TLS reverse proxy and dedicated repository-scoped native credential are needed for operational network use. Revocation prevents new admissions but cannot undo provider calls already admitted. No exactly-once provider claim is made.
 
-Existing SQLite data is not automatically migrated; rollback and future migration require the separate plan in `docs/rust/DATA_MIGRATION.md`. Python remains historical reference, never a primary runtime dependency. Main is preserved while the dedicated migration branch is reviewed.
+Existing SQLite data is not automatically migrated; rollback and future migration require the separate plan in `docs/rust/DATA_MIGRATION.md`. Python remains historical reference, never a primary runtime dependency. The migration is prepared on a dedicated branch; fusion requires a successful Ubuntu job for the reviewed candidate revision. See [CODE_REVIEW.md](docs/rust/CODE_REVIEW.md) for corrections and review limits.
