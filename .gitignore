@@ -17,9 +17,14 @@ node_modules/
 .DS_Store
 
 .playwright-cli/
-output/playwright/
+output/
 
 .coverage*
 htmlcov/
 *.token
 *.secret
+target/
+var-rust/
+
+*.profraw
+*.profdata
