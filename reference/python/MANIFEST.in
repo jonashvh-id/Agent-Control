@@ -1,4 +1,0 @@
-recursive-include frontend/src *.js *.css
-include frontend/index.html
-include backend/app/core/database/schema.sql
-include frontend/favicon.svg

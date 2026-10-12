@@ -21,7 +21,7 @@ Agent Control's primary backend is a standalone Rust executable. Axum, Tokio, SQ
 | connectors/github | `crates/connector-github/src/` |
 | frontend | Retained at `frontend/`, embedded in Rust; only the version badge changes |
 
-Python code has been reimplemented in Rust, rather than wrapped or embedded. Literal GitHub schemas preserve the source contract, and the SQL migration preserves the table lineage while extending execution states. Archived Python source/build metadata/tests and its original frontend are in `reference/python/`; the pinned Git commit remains authoritative. Optional comparison tooling restores that commit into temporary isolated storage automatically.
+Python code has been reimplemented in Rust, rather than wrapped or embedded. Literal GitHub schemas preserve the source contract, and the SQL migration preserves the table lineage while extending execution states. The previous implementation remains in Git history and is not included in the current working tree.
 
 ## Design and behavior
 

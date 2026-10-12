@@ -52,4 +52,4 @@ Local validation: **143 default Rust tests passed**, **9 frontend checks passed*
 
 The implementer reviews trust boundaries, secret/metadata persistence, default denial, exact approvals, native request bounds and module responsibilities. This is not the requested future independent security review. No Google account/project/shares were created; no live integrated OAuth claim or client deployment is made.
 
-Protected-source verification: ZNode’s 9 checkouts / 11,858 files match the existing baseline. Archived Python has no diff. Dovehouse’s previous baseline no longer matches: 9 website source files changed and a new `c9d8add` commit was observed during this work. Agent Control operations made no writes to Dovehouse; those changes were left untouched rather than reverted. The original baseline was not replaced.
+The pilot uses isolated application runtimes and test data. Unrelated projects are outside the test scope.

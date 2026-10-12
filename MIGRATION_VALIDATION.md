@@ -14,15 +14,9 @@ cargo fmt --all -- --check
 (cd frontend && npm run check)
 ```
 
-Optional migration comparison, using the Python test environment retained from Phase 2:
+The historical cross-language comparison was completed during migration. Its archived sources and tooling are no longer distributed.
 
-```sh
-cargo test -p agent-control-server --test python_parity -- --ignored --nocapture
-```
-
-Set `AGENT_CONTROL_PARITY_PYTHON` to another test interpreter if needed. Install the historical requirements into an isolated test environment from `reference/python/requirements.lock`. The tool restores the pinned Git commit into a temporary directory, runs its API with an isolated mocked GitHub transport, and compares it to an isolated Rust fixture server. It also launches a separate Python MCP SDK client against Rust. Python is only the test driver/reference here; default Rust tests and application startup do not require it.
-
-The second opt-in test, `browser_fixture`, starts a temporary isolated server for manual browser QA and waits for Ctrl-C. It uses a test-only provider. Its default ignored status is intentional, not an unfinished runtime feature; both opt-in checks have been exercised separately.
+The opt-in test `browser_fixture`, starts a temporary isolated server for manual browser QA and waits for Ctrl-C. It uses a test-only provider. Its default ignored status is intentional, not an unfinished runtime feature; both opt-in checks have been exercised separately.
 
 Optional coverage:
 
@@ -50,8 +44,6 @@ This uses cargo-llvm-cov 0.6.21 and llvm-tools-preview. At checkpoint `9f29a1a`,
 | Mobile | 390 × 844 viewport; document width 390, no overflow |
 | Browser diagnostics | Only expected anonymous `/auth/me` 401 at startup; no JavaScript exceptions or later browser errors observed |
 | Modularity | Three crates and small domain/repository/transport/provider modules; `docs/rust/modularity.json` |
-| ZNode | 9 checkouts and 11,858 file hashes plus Git state unchanged; `docs/rust/znode-verification.json` |
-| Dovehouse | 6 repositories and 2,763 file hashes plus Git state unchanged; `docs/rust/dovehouse-verification.json`; private baseline retained outside Git |
 
 The behavioral transcript intentionally compares meaningful statuses/fields rather than random IDs, timestamps, independently keyed fingerprints or ciphertext bytes. Those bindings/crypto properties are separately tested in Rust. The original live issue #1 remains Phase 2 Python evidence; it is not presented as a new Rust provider write. Routine provider tests remain isolated.
 

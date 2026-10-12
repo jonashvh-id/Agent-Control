@@ -24,8 +24,8 @@ Four crates form one executable. Dependency direction is `server → connector-g
 | `gateway/mod.rs` | Small execution/discovery facade shared by both transports. |
 | `audit/` | Structured events, payload-free summaries and append-only SQL persistence. |
 | `lifecycle/` | Global stop and agent/connector controls, with SQL repository separate from orchestration. |
-| `connector-github/config.rs` | Finite allowlist, excluded ZNode source, bounded timeouts and restricted demo mode. |
-| `connector-github/credentials.rs` | Private file reread or fixed bounded local gh command; secret material zeroized and never returned to callers. |
+| `connector-github/config.rs` | Finite allowlist, bounded timeouts . |
+| `connector-github/credentials.rs` | Private explicit credential-file reread; secret material zeroized and never returned to callers. |
 | `connector-github/definitions.rs`, `tools.json` | Literal input/output schemas for the two existing issue operations. No Python generation during build/runtime. |
 | `connector-github/adapter.rs` | Fixed-origin REST, explicit retry/redirect/proxy refusal, bounded results, native permissions and safe DTO/receipts. |
 | `connector-google-drive/config.rs`, `credentials.rs` | Exact file allowlist and bounded timeout; owned private short-lived token reread, with no credential exposure to the core/model. |
@@ -43,7 +43,7 @@ Four crates form one executable. Dependency direction is `server → connector-g
 
 Repository functions accept SQLx connections explicitly, allowing domain services to include writes and audit events in the same transaction. No transaction crosses external I/O. Most production files are below 300 lines; modules group coherent responsibilities rather than creating an empty crate for every feature. Tests instantiate domains separately and exercise the full HTTP/MCP composition as well.
 
-Historical Python paths are in `reference/python/`; they are not dependencies of these crates.
+Earlier implementation details remain in repository history.
 
 Frontend responsibilities remain separate: `features/agents.js` registry/effective access, `features/connect.js` scoped Codex setup, `features/policies.js` permissions, `features/approvals.js` exact human review, `features/google-setup.js` operator guidance, and `services/explanations.js` presentation of reasons. `scripts/codex_pilot.py` is optional model validation tooling, never application runtime.
 

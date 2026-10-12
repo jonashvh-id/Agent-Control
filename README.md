@@ -13,7 +13,7 @@ export AGENT_CONTROL_DATA_DIR=/absolute/private/path/new-agent-control-rust-runt
 ./target/release/agent-control-server serve --port 8010
 ```
 
-Open http://127.0.0.1:8010. Passwords are entered through the terminal without echo. No default account is created. The data directory must be empty on first use and remains private; only one process may open it. Existing Python/customer directories are rejected. The Python baseline is archived in `reference/python/` and Git history.
+Open http://127.0.0.1:8010. Passwords are entered through the terminal without echo. No default account is created. The data directory must be empty on first use and remains private; only one process may open it. Existing Python/customer directories are rejected. The previous implementation remains in Git history; the distributed runtime is Rust-only.
 
 The server binds to loopback. For a TLS reverse proxy, set `AGENT_CONTROL_ORIGIN` to the public HTTPS origin, `AGENT_CONTROL_SECURE_COOKIES=true`, and keep `serve --port` as the private listener port. Forward the original Host; proxy-provided identity/address headers are not trusted. Environment examples are documentation and are not automatically loaded.
 
@@ -33,7 +33,6 @@ The configured connector starts disabled. Enable it in Applications; register an
 
 Agents connect to `/mcp/` with their Agent Control bearer token, or use `/api/v1/gateway/tools` and `/api/v1/gateway/execute`. MCP tool names are `github.issues.list` and `github.issues.create`. Arguments contain `parameters`, `idempotency_key`, and optional `approval_id`. Only a separately authenticated human session may approve the exact proposal. See [the API contract](docs/api/MCP_GITHUB.md).
 
-Local `gh-demo` can read the existing gh keychain credential in memory, exclusively for `jonashvh-id/Agent-Control` and a loopback origin. Its native rights may be broader; the dedicated file credential is the operational path. Neither mode exposes the GitHub credential to an agent or persists it in SQLite.
 
 An idempotency key binds one request. Dispatched or uncertain writes are never retried automatically; a repeat returns a minimized receipt or a refusal. Revocation blocks new admissions, while an already admitted provider call may finish. This does not provide an exactly-once provider guarantee.
 
@@ -65,7 +64,7 @@ cargo fmt --all -- --check
 
 Routine tests use isolated providers. The suite includes an independent native MCP SDK client and a copied executable starting outside the workspace with an empty PATH. Optional cross-language tooling compares the pinned Python baseline and verifies a Python SDK client against Rust; see [MIGRATION_VALIDATION.md](MIGRATION_VALIDATION.md). Do not create live GitHub issues for routine validation.
 
-Read [RUST_MIGRATION_REPORT.md](RUST_MIGRATION_REPORT.md), [RUST_MODULE_MAP.md](RUST_MODULE_MAP.md), [SECURITY_PARITY.md](SECURITY_PARITY.md), [ARCHITECTURE.md](ARCHITECTURE.md) and [SECURITY_BOUNDARIES.md](SECURITY_BOUNDARIES.md). Historical extraction and live Phase 2 evidence remain in [EXTRACTION_REPORT.md](EXTRACTION_REPORT.md) and `docs/reviews/`.
+Read [RUST_MIGRATION_REPORT.md](RUST_MIGRATION_REPORT.md), [RUST_MODULE_MAP.md](RUST_MODULE_MAP.md), [SECURITY_PARITY.md](SECURITY_PARITY.md), [ARCHITECTURE.md](ARCHITECTURE.md) and [SECURITY_BOUNDARIES.md](SECURITY_BOUNDARIES.md). Additional validation evidence is available in `docs/reviews/` and `docs/rust/`.
 
 OAuth MCP, integrated Google OAuth/refresh, SSO/MFA, managed vaults, tenant isolation, reconciliation/cancellation, external audit integrity and production certification remain future work. MFA, managed secrets and independent review remain prerequisites for client deployment. No deployment or release is performed by this work.
 
