@@ -1,3 +1,5 @@
+> Historical Python extraction report. The primary backend is now Rust; destinations below are preserved under `reference/python/` and in the pinned Git history. See RUST_MIGRATION_REPORT.md for the current migration.
+
 # Extraction report
 
 ## Measured scope of reuse (phase 1)

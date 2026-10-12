@@ -1,0 +1,659 @@
+{
+  "tool": "cargo-llvm-cov 0.6.21 / stable Rust 1.89",
+  "scope": "production Rust workspace files; integration and adapter test files excluded",
+  "metric": "line/region coverage, not directly comparable to Python combined statement/branch coverage",
+  "totals": {
+    "branches": {
+      "count": 0,
+      "covered": 0,
+      "notcovered": 0,
+      "percent": 0
+    },
+    "functions": {
+      "count": 387,
+      "covered": 338,
+      "percent": 87.33850129198966
+    },
+    "instantiations": {
+      "count": 887,
+      "covered": 422,
+      "percent": 47.57609921082299
+    },
+    "lines": {
+      "count": 2658,
+      "covered": 2389,
+      "percent": 89.87960872836719
+    },
+    "mcdc": {
+      "count": 0,
+      "covered": 0,
+      "notcovered": 0,
+      "percent": 0
+    },
+    "regions": {
+      "count": 4438,
+      "covered": 3785,
+      "notcovered": 653,
+      "percent": 85.28616493916178
+    }
+  },
+  "files": [
+    {
+      "file": "crates/connector-github/src/adapter.rs",
+      "lines": {
+        "count": 106,
+        "covered": 87,
+        "percent": 82.0754716981132
+      },
+      "regions": {
+        "count": 175,
+        "covered": 136,
+        "notcovered": 39,
+        "percent": 77.71428571428571
+      }
+    },
+    {
+      "file": "crates/connector-github/src/config.rs",
+      "lines": {
+        "count": 30,
+        "covered": 30,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 50,
+        "covered": 49,
+        "notcovered": 1,
+        "percent": 98.0
+      }
+    },
+    {
+      "file": "crates/connector-github/src/credentials.rs",
+      "lines": {
+        "count": 114,
+        "covered": 109,
+        "percent": 95.6140350877193
+      },
+      "regions": {
+        "count": 174,
+        "covered": 161,
+        "notcovered": 13,
+        "percent": 92.52873563218392
+      }
+    },
+    {
+      "file": "crates/connector-github/src/definitions.rs",
+      "lines": {
+        "count": 9,
+        "covered": 9,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 12,
+        "covered": 12,
+        "notcovered": 0,
+        "percent": 100.0
+      }
+    },
+    {
+      "file": "crates/control-core/src/agents/mod.rs",
+      "lines": {
+        "count": 162,
+        "covered": 158,
+        "percent": 97.53086419753086
+      },
+      "regions": {
+        "count": 243,
+        "covered": 217,
+        "notcovered": 26,
+        "percent": 89.30041152263377
+      }
+    },
+    {
+      "file": "crates/control-core/src/agents/repository.rs",
+      "lines": {
+        "count": 71,
+        "covered": 71,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 118,
+        "covered": 111,
+        "notcovered": 7,
+        "percent": 94.0677966101695
+      }
+    },
+    {
+      "file": "crates/control-core/src/approvals/mod.rs",
+      "lines": {
+        "count": 122,
+        "covered": 116,
+        "percent": 95.08196721311475
+      },
+      "regions": {
+        "count": 194,
+        "covered": 156,
+        "notcovered": 38,
+        "percent": 80.41237113402062
+      }
+    },
+    {
+      "file": "crates/control-core/src/approvals/repository.rs",
+      "lines": {
+        "count": 67,
+        "covered": 67,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 118,
+        "covered": 110,
+        "notcovered": 8,
+        "percent": 93.22033898305084
+      }
+    },
+    {
+      "file": "crates/control-core/src/audit/redaction.rs",
+      "lines": {
+        "count": 22,
+        "covered": 17,
+        "percent": 77.27272727272727
+      },
+      "regions": {
+        "count": 40,
+        "covered": 33,
+        "notcovered": 7,
+        "percent": 82.5
+      }
+    },
+    {
+      "file": "crates/control-core/src/audit/repository.rs",
+      "lines": {
+        "count": 18,
+        "covered": 18,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 61,
+        "covered": 59,
+        "notcovered": 2,
+        "percent": 96.72131147540983
+      }
+    },
+    {
+      "file": "crates/control-core/src/error.rs",
+      "lines": {
+        "count": 23,
+        "covered": 17,
+        "percent": 73.91304347826086
+      },
+      "regions": {
+        "count": 17,
+        "covered": 11,
+        "notcovered": 6,
+        "percent": 64.70588235294117
+      }
+    },
+    {
+      "file": "crates/control-core/src/execution/mod.rs",
+      "lines": {
+        "count": 73,
+        "covered": 70,
+        "percent": 95.8904109589041
+      },
+      "regions": {
+        "count": 112,
+        "covered": 103,
+        "notcovered": 9,
+        "percent": 91.96428571428571
+      }
+    },
+    {
+      "file": "crates/control-core/src/gateway/admission.rs",
+      "lines": {
+        "count": 87,
+        "covered": 85,
+        "percent": 97.70114942528735
+      },
+      "regions": {
+        "count": 211,
+        "covered": 198,
+        "notcovered": 13,
+        "percent": 93.83886255924169
+      }
+    },
+    {
+      "file": "crates/control-core/src/gateway/authorization.rs",
+      "lines": {
+        "count": 19,
+        "covered": 19,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 27,
+        "covered": 26,
+        "notcovered": 1,
+        "percent": 96.29629629629629
+      }
+    },
+    {
+      "file": "crates/control-core/src/gateway/dispatch.rs",
+      "lines": {
+        "count": 133,
+        "covered": 123,
+        "percent": 92.4812030075188
+      },
+      "regions": {
+        "count": 212,
+        "covered": 192,
+        "notcovered": 20,
+        "percent": 90.56603773584906
+      }
+    },
+    {
+      "file": "crates/control-core/src/gateway/journal.rs",
+      "lines": {
+        "count": 31,
+        "covered": 30,
+        "percent": 96.7741935483871
+      },
+      "regions": {
+        "count": 34,
+        "covered": 33,
+        "notcovered": 1,
+        "percent": 97.05882352941178
+      }
+    },
+    {
+      "file": "crates/control-core/src/gateway/mod.rs",
+      "lines": {
+        "count": 26,
+        "covered": 26,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 67,
+        "covered": 63,
+        "notcovered": 4,
+        "percent": 94.02985074626868
+      }
+    },
+    {
+      "file": "crates/control-core/src/identity/mod.rs",
+      "lines": {
+        "count": 130,
+        "covered": 128,
+        "percent": 98.46153846153847
+      },
+      "regions": {
+        "count": 198,
+        "covered": 175,
+        "notcovered": 23,
+        "percent": 88.38383838383838
+      }
+    },
+    {
+      "file": "crates/control-core/src/identity/repository.rs",
+      "lines": {
+        "count": 95,
+        "covered": 94,
+        "percent": 98.94736842105264
+      },
+      "regions": {
+        "count": 129,
+        "covered": 117,
+        "notcovered": 12,
+        "percent": 90.69767441860466
+      }
+    },
+    {
+      "file": "crates/control-core/src/lib.rs",
+      "lines": {
+        "count": 45,
+        "covered": 45,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 51,
+        "covered": 47,
+        "notcovered": 4,
+        "percent": 92.15686274509804
+      }
+    },
+    {
+      "file": "crates/control-core/src/lifecycle/mod.rs",
+      "lines": {
+        "count": 71,
+        "covered": 68,
+        "percent": 95.77464788732394
+      },
+      "regions": {
+        "count": 112,
+        "covered": 94,
+        "notcovered": 18,
+        "percent": 83.92857142857143
+      }
+    },
+    {
+      "file": "crates/control-core/src/lifecycle/repository.rs",
+      "lines": {
+        "count": 40,
+        "covered": 40,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 57,
+        "covered": 52,
+        "notcovered": 5,
+        "percent": 91.22807017543859
+      }
+    },
+    {
+      "file": "crates/control-core/src/models.rs",
+      "lines": {
+        "count": 73,
+        "covered": 71,
+        "percent": 97.26027397260275
+      },
+      "regions": {
+        "count": 93,
+        "covered": 91,
+        "notcovered": 2,
+        "percent": 97.84946236559139
+      }
+    },
+    {
+      "file": "crates/control-core/src/persistence.rs",
+      "lines": {
+        "count": 95,
+        "covered": 91,
+        "percent": 95.78947368421052
+      },
+      "regions": {
+        "count": 193,
+        "covered": 172,
+        "notcovered": 21,
+        "percent": 89.11917098445595
+      }
+    },
+    {
+      "file": "crates/control-core/src/policy/engine.rs",
+      "lines": {
+        "count": 8,
+        "covered": 8,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 12,
+        "covered": 12,
+        "notcovered": 0,
+        "percent": 100.0
+      }
+    },
+    {
+      "file": "crates/control-core/src/policy/mod.rs",
+      "lines": {
+        "count": 53,
+        "covered": 52,
+        "percent": 98.11320754716981
+      },
+      "regions": {
+        "count": 74,
+        "covered": 67,
+        "notcovered": 7,
+        "percent": 90.54054054054053
+      }
+    },
+    {
+      "file": "crates/control-core/src/policy/repository.rs",
+      "lines": {
+        "count": 28,
+        "covered": 28,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 47,
+        "covered": 44,
+        "notcovered": 3,
+        "percent": 93.61702127659576
+      }
+    },
+    {
+      "file": "crates/control-core/src/security/files.rs",
+      "lines": {
+        "count": 46,
+        "covered": 44,
+        "percent": 95.65217391304348
+      },
+      "regions": {
+        "count": 98,
+        "covered": 86,
+        "notcovered": 12,
+        "percent": 87.75510204081633
+      }
+    },
+    {
+      "file": "crates/control-core/src/security/keys.rs",
+      "lines": {
+        "count": 62,
+        "covered": 57,
+        "percent": 91.93548387096774
+      },
+      "regions": {
+        "count": 103,
+        "covered": 96,
+        "notcovered": 7,
+        "percent": 93.20388349514563
+      }
+    },
+    {
+      "file": "crates/control-core/src/security/passwords.rs",
+      "lines": {
+        "count": 31,
+        "covered": 29,
+        "percent": 93.54838709677419
+      },
+      "regions": {
+        "count": 46,
+        "covered": 44,
+        "notcovered": 2,
+        "percent": 95.65217391304348
+      }
+    },
+    {
+      "file": "crates/server/src/assets.rs",
+      "lines": {
+        "count": 25,
+        "covered": 22,
+        "percent": 88.0
+      },
+      "regions": {
+        "count": 29,
+        "covered": 26,
+        "notcovered": 3,
+        "percent": 89.65517241379311
+      }
+    },
+    {
+      "file": "crates/server/src/bootstrap.rs",
+      "lines": {
+        "count": 47,
+        "covered": 0,
+        "percent": 0.0
+      },
+      "regions": {
+        "count": 92,
+        "covered": 0,
+        "notcovered": 92,
+        "percent": 0.0
+      }
+    },
+    {
+      "file": "crates/server/src/cli.rs",
+      "lines": {
+        "count": 59,
+        "covered": 58,
+        "percent": 98.30508474576273
+      },
+      "regions": {
+        "count": 127,
+        "covered": 126,
+        "notcovered": 1,
+        "percent": 99.21259842519686
+      }
+    },
+    {
+      "file": "crates/server/src/config.rs",
+      "lines": {
+        "count": 67,
+        "covered": 34,
+        "percent": 50.74626865671642
+      },
+      "regions": {
+        "count": 117,
+        "covered": 64,
+        "notcovered": 53,
+        "percent": 54.700854700854705
+      }
+    },
+    {
+      "file": "crates/server/src/http/agents.rs",
+      "lines": {
+        "count": 60,
+        "covered": 36,
+        "percent": 60.0
+      },
+      "regions": {
+        "count": 100,
+        "covered": 56,
+        "notcovered": 44,
+        "percent": 56.00000000000001
+      }
+    },
+    {
+      "file": "crates/server/src/http/auth.rs",
+      "lines": {
+        "count": 135,
+        "covered": 129,
+        "percent": 95.55555555555556
+      },
+      "regions": {
+        "count": 200,
+        "covered": 184,
+        "notcovered": 16,
+        "percent": 92.0
+      }
+    },
+    {
+      "file": "crates/server/src/http/boundary.rs",
+      "lines": {
+        "count": 82,
+        "covered": 72,
+        "percent": 87.8048780487805
+      },
+      "regions": {
+        "count": 153,
+        "covered": 139,
+        "notcovered": 14,
+        "percent": 90.84967320261438
+      }
+    },
+    {
+      "file": "crates/server/src/http/gateway.rs",
+      "lines": {
+        "count": 20,
+        "covered": 20,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 38,
+        "covered": 33,
+        "notcovered": 5,
+        "percent": 86.8421052631579
+      }
+    },
+    {
+      "file": "crates/server/src/http/governance.rs",
+      "lines": {
+        "count": 81,
+        "covered": 58,
+        "percent": 71.60493827160494
+      },
+      "regions": {
+        "count": 168,
+        "covered": 114,
+        "notcovered": 54,
+        "percent": 67.85714285714286
+      }
+    },
+    {
+      "file": "crates/server/src/http/mod.rs",
+      "lines": {
+        "count": 36,
+        "covered": 36,
+        "percent": 100.0
+      },
+      "regions": {
+        "count": 74,
+        "covered": 73,
+        "notcovered": 1,
+        "percent": 98.64864864864865
+      }
+    },
+    {
+      "file": "crates/server/src/http/response.rs",
+      "lines": {
+        "count": 22,
+        "covered": 19,
+        "percent": 86.36363636363636
+      },
+      "regions": {
+        "count": 24,
+        "covered": 21,
+        "notcovered": 3,
+        "percent": 87.5
+      }
+    },
+    {
+      "file": "crates/server/src/lib.rs",
+      "lines": {
+        "count": 23,
+        "covered": 11,
+        "percent": 47.82608695652174
+      },
+      "regions": {
+        "count": 46,
+        "covered": 18,
+        "notcovered": 28,
+        "percent": 39.130434782608695
+      }
+    },
+    {
+      "file": "crates/server/src/main.rs",
+      "lines": {
+        "count": 21,
+        "covered": 0,
+        "percent": 0.0
+      },
+      "regions": {
+        "count": 18,
+        "covered": 0,
+        "notcovered": 18,
+        "percent": 0.0
+      }
+    },
+    {
+      "file": "crates/server/src/mcp.rs",
+      "lines": {
+        "count": 90,
+        "covered": 87,
+        "percent": 96.66666666666667
+      },
+      "regions": {
+        "count": 174,
+        "covered": 164,
+        "notcovered": 10,
+        "percent": 94.25287356321839
+      }
+    }
+  ],
+  "measured_revision": "9f29a1ae44b05d890d8e2fd7530f2d9b1c9a157a"
+}

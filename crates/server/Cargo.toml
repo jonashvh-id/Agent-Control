@@ -1,0 +1,29 @@
+[package]
+name = "agent-control-server"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+[lib]
+name = "control_server"
+[dependencies]
+control-core = { path = "../control-core" }
+connector-github = { path = "../connector-github" }
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+sqlx.workspace = true
+axum.workspace = true
+tracing.workspace = true
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+rmcp = { version = "3.5.1", features = ["transport-streamable-http-server"] }
+include_dir = "0.7"
+mime_guess = "2"
+url = "2"
+subtle = "2"
+rpassword = "7"
+zeroize = "1"
+[dev-dependencies]
+reqwest.workspace = true
+async-trait.workspace = true
+tempfile = "3"
+rmcp = { version = "=3.5.1", features = ["client", "reqwest", "transport-streamable-http-client-reqwest"] }
