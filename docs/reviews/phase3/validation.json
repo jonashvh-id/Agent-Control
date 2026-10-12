@@ -1,0 +1,22 @@
+{
+  "rust_tests": 128,
+  "frontend_tests": 6,
+  "default_ignored": 3,
+  "clippy": "pass",
+  "fmt": "pass",
+  "release_build": "pass",
+  "protected_projects": {
+    "znode": {
+      "unchanged": true,
+      "checkouts": 9,
+      "files": 11858
+    },
+    "dovehouse": {
+      "unchanged": true,
+      "repositories": 6,
+      "files": 2763
+    }
+  },
+  "independent_review": false,
+  "deployment": false
+}

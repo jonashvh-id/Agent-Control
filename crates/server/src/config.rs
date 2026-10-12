@@ -3,7 +3,12 @@ use control_core::{
     models::Config,
 };
 use std::path::PathBuf;
-pub fn from_env() -> Result<(Config, Option<connector_github::Config>)> {
+pub type Configuration = (
+    Config,
+    Option<connector_github::Config>,
+    Option<connector_google_drive::Config>,
+);
+pub fn from_env() -> Result<Configuration> {
     let value = |key: &str, default: &str| std::env::var(key).unwrap_or(default.into());
     let mut config = Config::local(PathBuf::from(value("AGENT_CONTROL_DATA_DIR", "var-rust")));
     config.origin = value("AGENT_CONTROL_ORIGIN", "http://127.0.0.1:8010")
@@ -33,7 +38,24 @@ pub fn from_env() -> Result<(Config, Option<connector_github::Config>)> {
             timeout: std::time::Duration::from_secs(10),
         })
     };
-    Ok((config, github))
+    let files: Vec<String> = value("AGENT_CONTROL_GOOGLE_DRIVE_FILES", "")
+        .split(',')
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(String::from)
+        .collect();
+    let drive = if files.is_empty() {
+        None
+    } else {
+        Some(connector_google_drive::Config {
+            files,
+            token_file: std::env::var("AGENT_CONTROL_GOOGLE_DRIVE_TOKEN_FILE")
+                .map(PathBuf::from)
+                .map_err(|_| Error::new("google_credential_unavailable", 503))?,
+            timeout: std::time::Duration::from_secs(10),
+        })
+    };
+    Ok((config, github, drive))
 }
 pub fn validate_origin(c: &Config) -> Result<url::Url> {
     let url = url::Url::parse(&c.origin).map_err(|_| Error::new("invalid_origin", 400))?;

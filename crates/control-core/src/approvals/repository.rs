@@ -23,7 +23,7 @@ pub async fn insert(
     Ok(())
 }
 pub async fn get(db: &mut SqliteConnection, id: &str) -> Result<SqliteRow> {
-    sqlx::query("SELECT * FROM approvals WHERE id=?")
+    sqlx::query("SELECT a.*,g.name AS agent_name FROM approvals a JOIN agents g ON g.id=a.agent_id WHERE a.id=?")
         .bind(id)
         .fetch_optional(db)
         .await?

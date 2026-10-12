@@ -1,5 +1,7 @@
 # Migration validation
 
+This document records the completed Rust migration checkpoint. New Phase 3 product/Google/Codex evidence and current test counts are tracked separately in [PHASE3_REPORT.md](docs/reviews/PHASE3_REPORT.md); the historical coverage and counts below are not measurements of the new adapter.
+
 Local validation performed on macOS arm64 with Rust 1.89, against isolated owned data and providers. Ubuntu 24.04 / Rust 1.89 is exercised by [GitHub Actions](.github/workflows/ci.yml); its result is a merge gate for [PR #2](https://github.com/jonashvh-id/Agent-Control/pull/2). The primary application runtime uses Rust and embedded JavaScript assets. No live GitHub write, deployment, release publication or customer-data migration is part of these checks.
 
 ## Commands

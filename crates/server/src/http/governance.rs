@@ -96,6 +96,6 @@ pub async fn settings(State(app): State<Arc<App>>, h: HeaderMap) -> ApiResult {
         .fetch_one(&app.db.pool)
         .await?;
     Ok(output(
-        json!({"version":"0.3.0","stage":if app.connectors.is_empty(){"foundation"}else{"github-pilot"},"default_policy":"deny","execution_enabled":app.config.execution_enabled,"emergency_stop":stopped,"external_adapters":app.connectors.len(),"registered_tools":app.connectors.iter().map(|c|c.tools().len()).sum::<usize>(),"mcp_transport":if app.config.mcp_enabled{"streamable-http"}else{"disabled"},"cancellation":"planned","health_monitoring":"planned","coverage":"Connections routed through this gateway only"}),
+        json!({"version":env!("CARGO_PKG_VERSION"),"stage":if app.connectors.is_empty(){"foundation"}else if app.connectors.len()>1{"multi-application-pilot"}else{"application-pilot"},"default_policy":"deny","execution_enabled":app.config.execution_enabled,"emergency_stop":stopped,"external_adapters":app.connectors.len(),"registered_tools":app.connectors.iter().map(|c|c.tools().len()).sum::<usize>(),"mcp_transport":if app.config.mcp_enabled{"streamable-http"}else{"disabled"},"cancellation":"planned","health_monitoring":"planned","coverage":"Connections routed through this gateway only"}),
     ))
 }

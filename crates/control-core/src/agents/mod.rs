@@ -178,3 +178,32 @@ pub async fn revoke(app: &App, actor: &Human, agent_id: &str, credential_id: &st
     db.commit().await?;
     Ok(())
 }
+pub async fn set_scopes(
+    app: &App,
+    actor: &Human,
+    agent: &str,
+    mut scopes: Vec<String>,
+) -> Result<()> {
+    if !scopes_valid(&scopes) {
+        return Err(Error::new("invalid_request", 422));
+    }
+    scopes.sort();
+    scopes.dedup();
+    let mut db = app.db.write().await?;
+    get(&mut db, agent).await?;
+    repository::set_scopes(&mut db, agent, &scopes).await?;
+    audit::record(
+        &mut db,
+        Event {
+            actor_kind: "human",
+            actor_id: &actor.id,
+            agent_id: agent,
+            action: "agent.scopes",
+            decision: "updated",
+            ..Default::default()
+        },
+    )
+    .await?;
+    db.commit().await?;
+    Ok(())
+}

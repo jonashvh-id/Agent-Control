@@ -8,6 +8,7 @@ name = "control_server"
 [dependencies]
 control-core = { path = "../control-core" }
 connector-github = { path = "../connector-github" }
+connector-google-drive = { path = "../connector-google-drive" }
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true
