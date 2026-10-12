@@ -90,6 +90,12 @@ impl Connector for GitHub {
         Ok(())
     }
     fn preview(&self, tool: &str, p: &Value) -> Option<Value> {
+        if tool == "issues.list" {
+            return Some(json!({"operation":tool,"repository":p["repository"],
+                "state":p["state"].as_str().unwrap_or("open"),
+                "limit":p["limit"].as_u64().unwrap_or(10),
+                "page":p["page"].as_u64().unwrap_or(1)}));
+        }
         Some(
             json!({"repository":p["repository"],"title":p["title"].as_str().unwrap_or(""),"body":p["body"].as_str().unwrap_or(""),"operation":tool}),
         )

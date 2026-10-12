@@ -51,3 +51,5 @@ Routine tests use isolated providers. The suite includes an independent native M
 Read [RUST_MIGRATION_REPORT.md](RUST_MIGRATION_REPORT.md), [RUST_MODULE_MAP.md](RUST_MODULE_MAP.md), [SECURITY_PARITY.md](SECURITY_PARITY.md), [ARCHITECTURE.md](ARCHITECTURE.md) and [SECURITY_BOUNDARIES.md](SECURITY_BOUNDARIES.md). Historical extraction and live Phase 2 evidence remain in [EXTRACTION_REPORT.md](EXTRACTION_REPORT.md) and `docs/reviews/`.
 
 OAuth MCP, SSO/MFA, managed vaults, tenant isolation, reconciliation/cancellation, external audit integrity and production certification remain future work. No deployment or release is performed by the migration.
+
+Ubuntu 24.04 CI runs Rust 1.89 formatting, clippy, tests, frontend checks and the standalone release build on pull requests and main/migration pushes. No application secrets or live providers are used. See [.github/workflows/ci.yml](.github/workflows/ci.yml) and [the final migration review](docs/rust/CODE_REVIEW.md).

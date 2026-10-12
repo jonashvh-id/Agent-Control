@@ -1,6 +1,6 @@
 # Security boundaries — Rust foundation
 
-Humans authenticate through Argon2id passwords and private hashed sessions. HttpOnly/SameSite cookies, HTTPS secure-cookie configuration, same-origin login and constant-time CSRF verification protect administrative mutations. Agents use separate scoped credentials whose keyed hashes are stored in SQLite. Human cookies and MCP transport state cannot confer agent access; agent tokens cannot confer human roles.
+Humans authenticate through Argon2id passwords and private hashed sessions. HttpOnly/SameSite cookies, HTTPS secure-cookie configuration, same-origin login and constant-time CSRF verification protect administrative mutations. All routes require the configured Host authority, including its port; URL components in Host are rejected. Agents use separate scoped credentials whose keyed hashes are stored in SQLite. Human cookies and MCP transport state cannot confer agent access; agent tokens cannot confer human roles.
 
 Every MCP request revalidates the current credential and active agent. Discovery, admission and final dispatch use one current-authorization path: identity, scope intersection, policy, connector state, global stop and execution enablement. Tools default DENY. GitHub creation forces ASK; repository deletion has no executable capability. REST follows the same gateway.
 
